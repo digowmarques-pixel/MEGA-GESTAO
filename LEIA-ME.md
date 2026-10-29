@@ -80,6 +80,8 @@ Veja o guia passo a passo em **HOSPEDAGEM.md** (Render + Neon + domínio própri
 | `DATABASE_URL` | Conexão PostgreSQL. Se vazia, usa arquivo local | vazia |
 | `DATA_DIR` | Pasta do arquivo local de dados | `./data` |
 | `PGSSL` | Use `false` para PostgreSQL local sem SSL | SSL ligado |
+| `PG_SCHEMA` | Esquema do PostgreSQL onde ficam os dados | `mega_gestao` |
+| `PG_POOL_MAX` | Máximo de conexões ao banco | `3` |
 
 ## Segurança
 

@@ -30,16 +30,26 @@ function fileStore() {
 }
 function pgStore(url) {
   const { Pool } = require('pg');
-  const pool = new Pool({ connectionString: url, ssl: process.env.PGSSL === 'false' ? false : { rejectUnauthorized: false } });
+  // poucas conexões: o banco pode ser compartilhado com outros sistemas (ex.: Supabase)
+  const pool = new Pool({ connectionString: url, max: +process.env.PG_POOL_MAX || 3, ssl: process.env.PGSSL === 'false' ? false : { rejectUnauthorized: false } });
+  // Esquema próprio: fora do "public", que o Supabase publica automaticamente pela API dele.
+  const schema = process.env.PG_SCHEMA || 'mega_gestao';
+  if (!/^[a-z_][a-z0-9_]*$/.test(schema)) throw new Error('PG_SCHEMA inválido: use letras minúsculas, números e _');
+  const table = `"${schema}".mega_store`;
   return {
-    name: 'PostgreSQL',
+    name: `PostgreSQL (esquema ${schema})`,
     async load() {
-      await pool.query('create table if not exists mega_store (id int primary key, data jsonb not null, updated_at timestamptz default now())');
-      const r = await pool.query('select data from mega_store where id = 1');
+      // só cria o esquema se faltar: um usuário de banco restrito não tem permissão para criar esquemas
+      const ex = await pool.query('select 1 from pg_namespace where nspname = $1', [schema]);
+      if (!ex.rowCount) await pool.query(`create schema "${schema}"`);
+      await pool.query(`create table if not exists ${table} (id int primary key, data jsonb not null, updated_at timestamptz default now())`);
+      // RLS sem políticas: bloqueia acesso pelas APIs públicas; o dono da tabela (este servidor) continua com acesso
+      await pool.query(`alter table ${table} enable row level security`);
+      const r = await pool.query(`select data from ${table} where id = 1`);
       return r.rows[0] ? r.rows[0].data : null;
     },
     async save(db) {
-      await pool.query('insert into mega_store (id, data, updated_at) values (1, $1, now()) on conflict (id) do update set data = excluded.data, updated_at = now()', [JSON.stringify(db)]);
+      await pool.query(`insert into ${table} (id, data, updated_at) values (1, $1, now()) on conflict (id) do update set data = excluded.data, updated_at = now()`, [JSON.stringify(db)]);
     },
   };
 }

@@ -28,6 +28,30 @@ O plano grátis do Render existe, mas o servidor "dorme" depois de 15 minutos se
 2. Crie um projeto chamado `mega-gestao` e escolha a região **AWS US East (N. Virginia)**, que fica perto do servidor.
 3. Copie a **connection string** (começa com `postgresql://`). Guarde, ela é a senha do banco.
 
+### 2B. Ou usar um banco Supabase que você já tem
+
+Se a empresa já tem um projeto pago no Supabase, dá para usar o mesmo banco em vez do Neon. O MEGA Gestão **não mexe em nada do outro sistema**: ele guarda tudo num esquema próprio (`mega_gestao`), com uma única tabela, fora do esquema `public` que o Supabase publica pela API. A tabela também fica com proteção de linhas (RLS) ligada.
+
+Recomendado: criar um **usuário de banco só para o MEGA Gestão**. Com ele, o sistema nem consegue enxergar as tabelas do outro sistema.
+
+1. No Supabase, abra o projeto → **SQL Editor** → **New query**, cole e rode (troque a senha por uma forte):
+
+```sql
+create role mega_app with login password 'TROQUE-POR-UMA-SENHA-FORTE';
+create schema mega_gestao authorization mega_app;
+```
+
+2. Em **Connect** (botão no topo do projeto), copie a connection string do **Session pooler** (porta 5432). Use o Session pooler, não a "Direct connection": o Render só conecta por IPv4.
+3. Na string, troque o usuário e a senha pelos do passo 1. No pooler do Supabase o usuário leva o código do projeto junto, assim:
+
+```
+postgresql://mega_app.CODIGO-DO-PROJETO:SUA-SENHA@aws-0-REGIAO.pooler.supabase.com:5432/postgres
+```
+
+4. Use essa string como `DATABASE_URL` no Render (próximo passo). Pule a etapa do Neon.
+
+O sistema usa no máximo 3 conexões ao banco, para não disputar com o outro sistema.
+
 ### 3. Publicar no Render
 1. Crie uma conta em https://render.com entrando com o GitHub.
 2. Clique em **New → Blueprint** e escolha o repositório `mega-gestao`. O Render lê o arquivo `render.yaml`, que já está configurado.

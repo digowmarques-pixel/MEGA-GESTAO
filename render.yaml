@@ -1,11 +1,11 @@
 # Publicação no Render (render.com): New → Blueprint → escolha o repositório.
-# O banco fica no Neon (neon.tech); cole a connection string em DATABASE_URL quando o Render pedir.
+# Banco: Neon (neon.tech) ou Supabase (veja HOSPEDAGEM.md); cole a connection string em DATABASE_URL quando o Render pedir.
 services:
   - type: web
     name: mega-gestao
     runtime: node
     plan: starter            # sempre ligado (o plano free "dorme" depois de 15 min sem uso)
-    region: virginia         # crie o banco do Neon também nos EUA (AWS us-east-1) para ficar perto
+    region: virginia
     buildCommand: npm install --omit=dev
     startCommand: npm start
     healthCheckPath: /api/me
