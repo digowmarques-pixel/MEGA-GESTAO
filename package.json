@@ -1,0 +1,18 @@
+{
+  "name": "mega-gestao",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MEGA Gestão: sistema de gestão e acompanhamento de projetos com login, perfis e permissões",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^4.22.2",
+    "pg": "^8.23.1"
+  }
+}
