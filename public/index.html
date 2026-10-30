@@ -733,6 +733,8 @@ details.res>summary .muted{font-weight:400;font-size:12.5px}
 .month-bar b{font-family:var(--f-display);font-size:17px;min-width:150px;text-align:center}
 @media (max-width:860px){.ftr{grid-template-columns:52px minmax(0,1fr) auto}.ftr .chipst{grid-column:2/-1;justify-self:start}.finbox{grid-template-columns:1fr 1fr}.month-bar{padding-left:16px}}
 .ftv.tr{color:var(--info)}
+.impacc{display:flex;flex-direction:column;gap:2px;max-height:280px;overflow-y:auto}
+.impacc .strow{border-top:1px solid var(--line)}
 .sit{display:none}
 .daybal{display:flex;justify-content:center;padding:4px 0 8px}
 .daybal span{font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:99px;padding:2px 12px}
@@ -2356,7 +2358,7 @@ function finTx(m,a,b){
 function finAccounts(m,a,b){
   const accs=bankAccs(),end=b<TODAY?TODAY:b;
   return `<div class="kpis" style="max-width:640px"><div class="kpi"><small>Saldo atual</small><b class="num" style="font-size:23px">${fmtBRL(accs.reduce((s0,x)=>s0+accBalance(x),0))}</b></div><div class="kpi"><small>Saldo previsto em ${fmtLong(end)}</small><b class="num" style="font-size:23px">${fmtBRL(accs.reduce((s0,x)=>s0+accForecast(x,end),0))}</b></div></div>
-  <div class="accgrid"><button class="acard newc" data-a="accNew" data-type="banco"><span>${ic('plus')}</span>Nova conta</button>
+  <div style="display:flex;justify-content:flex-end;margin:-6px 0 10px"><label class="btn sm">${ic('download')} Importar do Mobills<input type="file" accept=".xlsx,.xls,.csv" data-c="impFile" hidden></label></div><div class="accgrid"><button class="acard newc" data-a="accNew" data-type="banco"><span>${ic('plus')}</span>Nova conta</button>
   ${accs.map(x=>{const bal=accBalance(x),pv=accForecast(x,end);return `<div class="acard"><div class="ah"><i style="background:${x.color}"></i><b>${esc(x.name)}</b><button class="icon-btn sm" data-a="accEdit" data-id="${x.id}" title="Editar conta" aria-label="Editar conta">${ic('gear')}</button></div><small class="muted">${esc(accTypeName(x.type))}</small>
     <div class="ar"><span>Saldo atual</span><b class="${bal<0?'neg':'pos'}">${fmtBRL(bal)}</b></div><div class="ar"><span>Saldo previsto</span><b class="${pv<0?'neg':'pos'}">${fmtBRL(pv)}</b></div>
     <div class="af"><button class="btn ghost sm" data-a="ftNew" data-k="out" data-acc="${x.id}">Despesa</button><button class="btn ghost sm" data-a="ftNew" data-k="in" data-acc="${x.id}">Receita</button><button class="btn ghost sm" data-a="ftNew" data-k="tr" data-acc="${x.id}">Transferir</button><button class="btn ghost sm" data-a="accTx" data-id="${x.id}">Extrato</button></div></div>`}).join('')}</div>
@@ -2410,9 +2412,74 @@ function finRel(m,a,b){
   }
   return `<div class="rel-tools"><div class="seg">${seg}</div>${kindSel}</div><section class="panel">${body}</section>`;
 }
+/* ---------- importar do Mobills (planilha exportada em "Relatórios > Transações") ---------- */
+let XLSXP=null,IMP=null;
+function loadXLSX(){
+  if(window.XLSX)return Promise.resolve(window.XLSX);
+  if(!XLSXP)XLSXP=new Promise((res,rej)=>{const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';sc.onload=()=>res(window.XLSX);sc.onerror=()=>{XLSXP=null;rej(new Error('Não foi possível carregar o leitor de planilhas. Verifique a internet.'))};document.head.appendChild(sc)});
+  return XLSXP;
+}
+const impNorm=x=>String(x??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+function impDate(v){
+  if(v instanceof Date)return iso(v);
+  if(typeof v==='number'){const d=new Date(Math.round((v-25569)*864e5));return iso(new Date(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()))}
+  const t=String(v||'').trim(),m=t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/)||t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(!m)return '';return t.includes('/')?`${m[3]}-${pad(+m[2])}-${pad(+m[1])}`:`${m[1]}-${m[2]}-${m[3]}`;
+}
+function impNum(v){if(typeof v==='number')return v;let t=String(v??'').replace(/[R$\s]/g,'');if(t.includes(','))t=t.replace(/\./g,'').replace(',','.');return parseFloat(t)||0}
+function parseMobills(wb){
+  const X=window.XLSX,sheets=wb.SheetNames.map(n=>({n:impNorm(n),rows:X.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:null})}));
+  const hdr=sh=>(sh.rows[0]||[]).map(impNorm),col=(h,...names)=>h.findIndex(x=>names.includes(x));
+  const isTx=sh=>{const h=hdr(sh);return h.includes('data')&&h.includes('valor')&&h.includes('conta')};
+  const isTr=sh=>{const h=hdr(sh);return h.includes('conta origem')&&h.includes('conta destino')};
+  let main=sheets.filter(sh=>sh.n==='receitas e despesas'&&isTx(sh));
+  if(!main.length)main=sheets.filter(sh=>(sh.n==='receitas'||sh.n==='despesas')&&isTx(sh));
+  if(!main.length)main=sheets.filter(isTx).slice(0,1);
+  const tx=[],tr=[],seen={};
+  const key=(...a)=>{const k=a.join('|');seen[k]=(seen[k]||0)+1;return k+'#'+seen[k]};
+  main.forEach(sh=>{const h=hdr(sh),iD=col(h,'data'),iDs=col(h,'descricao'),iV=col(h,'valor'),iA=col(h,'conta'),iS=col(h,'situacao'),iC=col(h,'categoria'),iSc=col(h,'subcategoria'),iT=col(h,'tipo');
+    sh.rows.slice(1).forEach(r=>{const date=impDate(r[iD]);let v=impNum(r[iV]);if(!date||!v)return;
+      if(iT>=0&&/despesa/.test(impNorm(r[iT]))&&v>0)v=-v;
+      const desc=String(r[iDs]??'').trim()||'(sem descrição)',acc=String(r[iA]??'').trim()||'Conta importada',sit=impNorm(r[iS]),amount=round2(Math.abs(v)),kind=v>0?'in':'out';
+      const cat=String(r[iC]??'').trim()+(iSc>=0&&r[iSc]?' / '+String(r[iSc]).trim():'');
+      tx.push({date,desc,amount,kind,acc,cat,paid:!sit||/pag|receb|conclu|efetu/.test(sit),imp:'mob:'+key(date,desc,amount,kind,impNorm(acc))})})});
+  sheets.filter(isTr).forEach(sh=>{const h=hdr(sh),iD=col(h,'data'),iF=col(h,'conta origem'),iTo=col(h,'conta destino'),iV=col(h,'valor'),iDs=col(h,'descricao');
+    sh.rows.slice(1).forEach(r=>{const date=impDate(r[iD]),amount=round2(Math.abs(impNum(r[iV])));if(!date||!amount||!r[iF]||!r[iTo])return;
+      const from=String(r[iF]).trim(),to=String(r[iTo]).trim();tr.push({date,from,to,amount,desc:iDs>=0&&r[iDs]?String(r[iDs]).trim():'Transferência',imp:'mobtr:'+key(date,impNorm(from),impNorm(to),amount)})})});
+  return {tx,tr};
+}
+async function impFile(file){
+  try{
+    const X=await loadXLSX(),buf=await file.arrayBuffer(),wb=X.read(buf,{type:'array',cellDates:false});
+    const d=parseMobills(wb);
+    if(!d.tx.length&&!d.tr.length){toast('Não encontrei lançamentos nesta planilha. Use o relatório de transações exportado do Mobills.');return}
+    IMP={...d,name:file.name};impModal();
+  }catch(e){toast(e.message&&e.message.includes('leitor')?e.message:'Não foi possível ler este arquivo. Envie a planilha .xlsx ou .csv exportada do Mobills.')}
+}
+const IMP_COLORS=['#2B6CB0','#B83280','#C05621','#2F855A','#805AD5','#D69E2E','#C53030','#2C7A7B','#DD6B20','#4A5568','#97266D','#3182CE','#38A169','#E53E3E','#6B46C1','#B7791F','#319795','#718096'];
+function impModal(){
+  const d=IMP,names=[...new Set([...d.tx.map(t=>t.acc),...d.tr.flatMap(t=>[t.from,t.to])])];
+  const existsA=n=>S.facc.find(a=>impNorm(a.name)===impNorm(n));
+  const cats=[...new Set(d.tx.map(t=>t.kind+'|'+t.cat).filter(x=>x.split('|')[1]))];
+  const newCats=cats.filter(k=>{const [kind,n]=k.split('|');return !S.fcat.some(c=>c.kind===kind&&impNorm(c.name)===impNorm(n))});
+  const dup=new Set(S.ftx.map(t=>t.imp).filter(Boolean)),nNew=d.tx.filter(t=>!dup.has(t.imp)).length+d.tr.filter(t=>!dup.has(t.imp)).length;
+  const dates=[...d.tx,...d.tr].map(t=>t.date).sort(),sample=S.facc.some(a=>a.id==='fa1');
+  const guess=n=>/cdb|invest|poupan|tesouro/i.test(n)?'invest':/^mp\b|mercado ?pago|picpay|pix|nubank|digital/i.test(n)?'digital':/caixa|dinheiro/i.test(n)?'caixa':'banco';
+  openModal(`<form class="md wide" data-form="imp" aria-label="Importar do Mobills"><h2>Importar do Mobills</h2>
+    <p>${esc(d.name)} · ${fmtLong(dates[0])} de ${dates[0].slice(0,4)} a ${fmtLong(dates[dates.length-1])} de ${dates[dates.length-1].slice(0,4)}</p>
+    <div class="finbox"><div><small>Receitas</small><b class="pos">${d.tx.filter(t=>t.kind==='in').length}</b><small>${fmtBRL(ftSum(d.tx,'in'))}</small></div><div><small>Despesas</small><b class="neg">${d.tx.filter(t=>t.kind==='out').length}</b><small>${fmtBRL(ftSum(d.tx,'out'))}</small></div><div><small>Transferências</small><b>${d.tr.length}</b></div><div><small>Novos (sem repetir)</small><b>${nNew}</b>${nNew<d.tx.length+d.tr.length?`<small>${d.tx.length+d.tr.length-nNew} já importados</small>`:''}</div></div>
+    <div class="sec-t">Contas encontradas</div>
+    <p class="muted" style="font-size:12.5px;margin:0">O Mobills não exporta o saldo inicial. Informe o <b>saldo atual de cada conta, como aparece no Mobills hoje</b>, e o sistema ajusta o saldo inicial para os valores baterem. Deixe em branco para manter o saldo calculado pelos lançamentos.</p>
+    <div class="impacc">${names.map((n,i)=>{const ex=existsA(n);return `<div class="strow"><b style="flex:1;min-width:150px">${esc(n)}${ex?' <span class="chipst mut">já existe</span>':''}</b>${ex?'':`<select name="imp-type" data-i2="${i}" aria-label="Tipo da conta">${ACC_TYPES.filter(t=>t[0]!=='cartao').map(([k,l])=>`<option value="${k}" ${guess(n)===k?'selected':''}>${l}</option>`).join('')}</select>`}<input type="number" step="0.01" name="imp-bal" data-i2="${i}" placeholder="Saldo atual (R$)" style="width:160px" aria-label="Saldo atual de ${esc(n)}"></div>`}).join('')}</div>
+    ${newCats.length?`<div class="sec-t">Categorias que serão criadas (${newCats.length})</div><div class="tags">${newCats.map(k=>{const [kind,n]=k.split('|');return `<span class="tagc" style="--c:${kind==='in'?'var(--ok)':'var(--danger)'}">${esc(n)}</span>`}).join('')}</div>`:''}
+    <label class="tog" style="color:var(--fg)"><input type="checkbox" id="imp-wipe" ${sample?'checked':''}> Apagar as contas, categorias e lançamentos atuais do financeiro antes de importar${sample?' (recomendado: hoje só há dados de exemplo)':''}</label>
+    <p class="err" role="alert"></p>
+    <div class="foot"><button type="button" class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" type="submit">Importar ${nNew} lançamentos</button></div></form>`);
+}
 function finConfig(){
   const catRows=k=>S.fcat.filter(c=>c.kind===k).map(c=>`<div class="strow"><input type="color" value="${c.color}" data-c="fcatF" data-f="color" data-id="${c.id}" aria-label="Cor"><input type="text" value="${esc(c.name)}" data-c="fcatF" data-f="name" data-id="${c.id}" aria-label="Nome da categoria">${k==='out'?`<label class="muted" style="font-size:12.5px;display:flex;gap:6px;align-items:center">Limite mensal R$ <input type="number" min="0" step="50" placeholder="sem limite" value="${+c.budget||''}" style="width:120px" data-c="fcatF" data-f="budget" data-id="${c.id}"></label>`:''}<span class="count">${S.ftx.filter(t=>t.catId===c.id).length} lanç.</span><button class="icon-btn sm" data-a="fcatDel" data-id="${c.id}" aria-label="Excluir categoria">${ic('trash')}</button></div>`).join('');
-  return `<section class="panel set-sec"><h2>Categorias de despesa e planejamento</h2><p>O limite mensal é o planejamento: quanto a empresa pode gastar na categoria por mês. Deixe em branco para não acompanhar.</p>${catRows('out')}<button class="btn ghost sm" data-a="fcatAdd" data-k="out">${ic('plus')} Nova categoria</button></section>
+  return `<section class="panel set-sec"><h2>Importar do Mobills</h2><p>Traga o histórico do Mobills: no Mobills, abra Relatórios › Transações, exporte para Excel e escolha o arquivo aqui.</p><label class="btn primary">${ic('download')} Escolher planilha do Mobills<input type="file" accept=".xlsx,.xls,.csv" data-c="impFile" hidden></label></section>
+  <section class="panel set-sec"><h2>Categorias de despesa e planejamento</h2><p>O limite mensal é o planejamento: quanto a empresa pode gastar na categoria por mês. Deixe em branco para não acompanhar.</p>${catRows('out')}<button class="btn ghost sm" data-a="fcatAdd" data-k="out">${ic('plus')} Nova categoria</button></section>
   <section class="panel set-sec"><h2>Categorias de receita</h2>${catRows('in')}<button class="btn ghost sm" data-a="fcatAdd" data-k="in">${ic('plus')} Nova categoria</button></section>
   <p class="muted" style="font-size:12.5px">Contas e cartões são cadastrados nas abas Contas e Cartões.</p>`;
 }
@@ -2725,6 +2792,7 @@ function importJSON(txt){
 
 /* ============ alterações de campos ============ */
 const C={
+  impFile:el=>{const f=el.files[0];el.value='';if(f)impFile(f)},
   accType:el=>{const f=el.closest('form'),card=el.value==='cartao';f.querySelector('#ac-card').hidden=!card;f.querySelector('#ac-initf').hidden=card;f.querySelector('#ac-help').hidden=card},
   rk:el=>{U.rk=el.value;render()},
   ff:el=>{U.ff={...(U.ff||{}),[el.dataset.k]:el.value};render()},
@@ -2783,6 +2851,19 @@ const E={
   blur:el=>el.blur(),
 };
 const F={
+  imp:f=>{const d=IMP;if(!d)return;
+    const names=[...new Set([...d.tx.map(t=>t.acc),...d.tr.flatMap(t=>[t.from,t.to])])];
+    const bal={},type={};f.querySelectorAll('[name=imp-bal]').forEach(i=>{if(i.value!=='')bal[names[+i.dataset.i2]]=round2(+i.value)});f.querySelectorAll('[name=imp-type]').forEach(i=>type[names[+i.dataset.i2]]=i.value);
+    if(f.querySelector('#imp-wipe').checked){S.ftx=[];S.facc=[];S.fcat=[]}
+    const accId={};names.forEach((n,i)=>{let a=S.facc.find(x=>impNorm(x.name)===impNorm(n));if(!a){a={id:uid(),name:n,type:type[n]||'banco',color:IMP_COLORS[(S.facc.length+i)%IMP_COLORS.length],initial:0};S.facc.push(a)}accId[n]=a.id});
+    const catId={};let ci=S.fcat.length;
+    d.tx.forEach(t=>{const k=t.kind+'|'+t.cat;if(!t.cat||catId[k])return;let c=S.fcat.find(x=>x.kind===t.kind&&impNorm(x.name)===impNorm(t.cat));if(!c){c={id:uid(),name:t.cat,kind:t.kind,color:IMP_COLORS[ci++%IMP_COLORS.length]};S.fcat.push(c)}catId[k]=c.id});
+    const dup=new Set(S.ftx.map(t=>t.imp).filter(Boolean));let n=0;
+    d.tx.forEach(t=>{if(dup.has(t.imp))return;S.ftx.push({id:uid(),kind:t.kind,desc:t.desc,amount:t.amount,date:t.date,paid:t.paid,paidDate:t.paid?t.date:'',accountId:accId[t.acc],catId:catId[t.kind+'|'+t.cat]||'',listId:'',party:'',notes:'',link:'',imp:t.imp});n++});
+    d.tr.forEach(t=>{if(dup.has(t.imp))return;S.ftx.push({id:uid(),kind:'tr',desc:t.desc,amount:t.amount,date:t.date,paid:true,paidDate:t.date,accountId:accId[t.from],toAccountId:accId[t.to],catId:'',listId:'',party:'',notes:'',link:'',imp:t.imp});n++});
+    // saldo inicial = saldo atual informado − tudo o que já foi pago até hoje nesta conta
+    Object.entries(bal).forEach(([nm,v])=>{const a=faccById(accId[nm]);if(!a)return;const eff=S.ftx.reduce((s0,t)=>t.paid&&(t.paidDate||t.date)<=TODAY?s0+txEff(t,a.id):s0,0);a.initial=round2(v-eff)});
+    IMP=null;closeModal();U.page='fin';U.finTab='resumo';U.finMonth=TODAY.slice(0,7);U.ff={};toast(`${n} lançamentos importados do Mobills`);render()},
   tr:f=>{const v=id=>f.querySelector('#'+id)?.value??'',id=f.dataset.id,err=f.querySelector('.err'),from=v('tr-from'),to=v('tr-to'),amount=round2(+v('tr-amount')||0),date=v('tr-date');
     if(from===to){err.textContent='Escolha contas diferentes.';return}if(amount<=0){err.textContent='Informe um valor maior que zero.';return}
     const paid=f.querySelector('#tr-paid').checked,data={kind:'tr',accountId:from,toAccountId:to,amount,date,paid,paidDate:paid?date:'',desc:v('tr-desc').trim()||'Transferência',invoice:f.dataset.invoice||undefined};
