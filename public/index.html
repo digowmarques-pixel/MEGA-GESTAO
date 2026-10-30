@@ -865,7 +865,41 @@ body.np-recursos [data-a="eqNew"],body.np-recursos [data-a="flNew"]{display:none
   .ftr{grid-template-columns:40px minmax(0,1fr) auto;gap:8px;padding:9px 2px}
   .ftd{font-size:10.5px}
   .ftv{font-size:13px}
+  /* projetos no celular: etapas empilhadas com atalhos no topo */
+  .jstages{display:flex;gap:6px;overflow-x:auto;padding:2px 16px 10px;flex:none;scrollbar-width:none}
+  .jstages::-webkit-scrollbar{display:none}
+  .jsg{display:inline-flex;align-items:center;gap:6px;flex:none;padding:6px 10px;border:1px solid var(--line);border-radius:99px;background:var(--surface);font-size:12.5px;font-weight:600;white-space:nowrap}
+  .jsg i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+  .jsg b{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+  .jboard{flex-direction:column;align-items:stretch;overflow-x:hidden;overflow-y:auto;scroll-snap-type:none;gap:10px;padding-bottom:20px}
+  .jboard .col{flex:none;width:100%;max-height:none;scroll-margin-top:6px}
+  .jboard .col-b{overflow:visible;max-height:none}
+  .jboard .empty-col .col-b{display:none}
+  .jboard .empty-col .col-h{opacity:.7}
+  /* dentro do projeto: dados recolhidos e filtros num botão */
+  .jobstrip{margin:0 16px 6px;padding:10px 12px;gap:8px 14px;position:relative}
+  .jobstrip:not(.open)>span:not(.k),.jobstrip:not(.open)>.jsx{display:none}
+  .jobstrip.open .jsx{margin-left:0;width:100%}
+  .jobstrip.open .jsx .btn{flex:1;justify-content:center}
+  .js-more{display:inline-flex;align-items:center;gap:4px;order:9;margin-left:auto;font-size:12.5px;font-weight:600;color:var(--accent);background:none;border:0;padding:4px 0}
+  .js-more .ic{transform:rotate(90deg);transition:transform .15s}
+  .jobstrip.open .js-more{order:10;margin:0 auto}
+  .jobstrip.open .js-more .ic{transform:rotate(-90deg)}
+  .tb{gap:8px}
+  .tb .search{flex:1 1 180px;min-width:0}
+  .tb .search input{width:100%}
+  .tb-more{order:2;flex:none}
+  .tb-more.on{border-color:var(--accent);color:var(--accent)}
+  .tb-more .badge{font-size:10px;line-height:16px;padding:0 5px}
+  .tb:not(.open)>select,.tb:not(.open)>.tog,.tb:not(.open)>[data-a=clearF]{display:none}
+  .tb.open>select{flex:1 1 45%;order:3}
+  .tb.open>.tog,.tb.open>[data-a=clearF]{order:4}
+  .tabs .tab{padding-left:8px;padding-right:8px}
+  .cal-hint{display:none}
+  .cal-h h2{min-width:0;flex:1;font-size:17px}
 }
+.js-more,.tb-more,.jstages{display:none}
+@media (max-width:860px){.js-more,.tb-more{display:inline-flex}.jstages{display:flex}}
 </style>
 
 <div class="app">
@@ -911,6 +945,7 @@ home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>',
 inbox:'<path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6z"/>',
 board:'<rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/>',
 list:'<path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/>',
+filter:'<path d="M3 5h18l-7 8.5V19l-4 2v-7.5z"/>',
 bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
 cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
 gantt:'<path d="M3 3v18"/><rect x="6" y="5" width="8" height="3.5" rx="1"/><rect x="10" y="10.5" width="10" height="3.5" rx="1"/><rect x="7" y="16" width="7" height="3.5" rx="1"/>',
@@ -1165,6 +1200,8 @@ window.addEventListener('appinstalled',()=>{INSTALL=null;toast('Aplicativo insta
 let S=emptyState(),ME=null,SNAP=null,VERSION=0,MODE='local',USERS=null,MLOCK=false;
 const UDEF={page:'home',loc:{t:'all'},view:'board',groupBy:'status',q:'',fm:'',fp:'',ft:'',hideDone:false,month:TODAY.slice(0,7),gStart:addDays(TODAY,-7),collapsed:{},sort:{k:'due',d:1},task:null,side:false,theme:'',docId:'',expanded:{},dashSpace:'',finTab:'resumo',finMonth:'',ff:{},chatSel:null,chatOpen:false,mAll:false,meetLink:null,fFn:'',eqCat:'',eqDate:'',flFn:'',jk:'',agMonth:'',ad:{trigger:'status',tv:'Em revisão',action:'assign',av:'',scope:''}};
 let U;try{U={...UDEF,...JSON.parse(localStorage.getItem(UKEY)||'{}')}}catch(e){U={...UDEF}}
+/* no celular as tarefas abrem em lista (o quadro fica a um toque, na aba Quadro) */
+try{if(matchMedia('(max-width:860px)').matches&&!localStorage.getItem('mega-mobview')){U.view='list';localStorage.setItem('mega-mobview','1')}}catch(e){}
 U.side=false;U.month=U.month||UDEF.month;
 function saveU(){try{localStorage.setItem(UKEY,JSON.stringify({...U,side:false}))}catch(e){}}
 
@@ -1701,7 +1738,9 @@ function workPage(){
 }
 function toolbar(){
   const any=U.q||U.fm||U.fp||U.ft||U.hideDone;
-  return `<div class="tb">
+  const nf=[U.fm,U.fp,U.hideDone].filter(Boolean).length+(U.groupBy!=='status'?1:0);
+  return `<div class="tb ${U.tbOpen?'open':''}">
+    <button type="button" class="btn tb-more ${nf?'on':''}" data-a="tbTog" aria-expanded="${!!U.tbOpen}">${ic('filter')} Filtros${nf?` <b class="badge">${nf}</b>`:''}</button>
     <label class="search">${ic('search')}<input id="q" placeholder="Filtrar tarefas…" value="${esc(U.q)}" data-i="q" data-fk="q" aria-label="Filtrar tarefas"></label>
     <select id="fm" data-c="filt" data-k="fm" aria-label="Responsável"><option value="">Todos os responsáveis</option>${S.members.map(m=>`<option value="${m.id}" ${U.fm===m.id?'selected':''}>${esc(m.name)}</option>`).join('')}</select>
     <select id="fp" data-c="filt" data-k="fp" aria-label="Prioridade"><option value="">Todas as prioridades</option>${Object.entries(PRI).map(([k,v])=>`<option value="${k}" ${U.fp===k?'selected':''}>${v.l}</option>`).join('')}</select>
@@ -1761,7 +1800,7 @@ function calView(ts){
   const undated=ts.filter(t=>!t.due&&!isDone(t));
   const chip=t=>`<div class="cchip ${isDone(t)?'dn-t':''}" style="--c:${statusOf(t)?.color}" ${canEditTask(t)?'draggable="true" data-drag':''} data-a="open" data-id="${t.id}" title="${esc(t.title)}">${esc(t.title)}</div>`;
   return `<div class="calw"><div class="cal">
-    <div class="cal-h"><button class="icon-btn" data-a="month" data-d="-1" aria-label="Mês anterior">${ic('left')}</button><h2>${MESL[m-1]} ${y}</h2><button class="icon-btn" data-a="month" data-d="1" aria-label="Próximo mês">${ic('chev')}</button><button class="btn sm" data-a="month" data-d="0">Hoje</button><span class="muted" style="margin-left:auto;font-size:12.5px">Arraste tarefas entre os dias para mudar o prazo</span></div>
+    <div class="cal-h"><button class="icon-btn" data-a="month" data-d="-1" aria-label="Mês anterior">${ic('left')}</button><h2>${MESL[m-1]} ${y}</h2><button class="icon-btn" data-a="month" data-d="1" aria-label="Próximo mês">${ic('chev')}</button><button class="btn sm" data-a="month" data-d="0">Hoje</button><span class="muted cal-hint" style="margin-left:auto;font-size:12.5px">Arraste tarefas entre os dias para mudar o prazo</span></div>
     <div class="cal-g scroll">${DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
     ${cells.map(d=>`<div class="cday ${d.slice(0,7)!==U.month?'out':''} ${d===TODAY?'td':''}" data-dropdate="${d}">
       <div class="cday-h"><span class="dn">${parse(d).getDate()}</span><button class="icon-btn sm addd" data-a="newTask" data-due="${d}" aria-label="Nova tarefa em ${fmtLong(d)}">${ic('plus')}</button></div>
@@ -2067,7 +2106,7 @@ const shootLabel=l=>l.shootStart?fmtDate(l.shootStart)+(l.shootEnd&&l.shootEnd>l
 function jobStrip(l){
   if(!l)return'';const st=stageOf(l),late=l.due&&l.due<TODAY&&l.stage!=='entregue';
   const lk=[['bruto','Material bruto'],['revisao','Revisão'],['entrega','Entrega']].filter(([k])=>safeUrl(l.links?.[k])).map(([k,n])=>`<a class="btn sm" href="${esc(l.links[k])}" target="_blank" rel="noopener">${ic('link','sm')} ${n}</a>`).join('');
-  return `<div class="jobstrip">${pill(st[1],st[2])}${l.client?`<span><small>Cliente</small>${esc(l.client)}</span>`:''}${l.shootStart?`<span><small>Captação</small>${shootLabel(l)}</span>`:''}${l.location?`<span><small>Local</small>${esc(l.location)}</span>`:''}${l.due?`<span><small>Entrega</small><b style="${late?'color:var(--danger)':''}">${fmtLong(l.due)}</b></span>`:''}${(l.team||[]).length?`<span><small>Equipe</small>${avs(l.team)}</span>`:''}${(l.freelas||[]).filter(flById).length?`<span><small>Freelancers</small><span class="avs">${l.freelas.map(flById).filter(Boolean).map(flAv).join('')}</span></span>`:''}${(l.gear||[]).length?`<span><small>Equipamentos</small>${l.gear.filter(eqById).length} reservado${l.gear.filter(eqById).length===1?'':'s'}</span>`:''}${[...(l.gear||[]).filter(id=>clashes('gear',id,l).length||eqById(id)?.status==='manutencao'),...(l.freelas||[]).filter(id=>clashes('freelas',id,l).length),...(l.team||[]).filter(id=>clashes('team',id,l).length)].length?'<span class="conf" title="Algum equipamento, freelancer ou pessoa da equipe está em outro projeto na mesma data ou em manutenção">Conflito de agenda</span>':''}<div class="jsx">${lk}<button class="btn sm" data-a="job" data-id="${l.id}">${can('gerenciar_estrutura')?'Editar projeto':'Dados do projeto'}</button></div></div>`;
+  return `<div class="jobstrip ${U.jsOpen?'open':''}"><button type="button" class="js-more" data-a="jsTog" aria-expanded="${!!U.jsOpen}">${U.jsOpen?'Menos':'Detalhes'} ${ic('chev')}</button>${pill(st[1],st[2])}${l.client?`<span><small>Cliente</small>${esc(l.client)}</span>`:''}${l.shootStart?`<span><small>Captação</small>${shootLabel(l)}</span>`:''}${l.location?`<span><small>Local</small>${esc(l.location)}</span>`:''}${l.due?`<span class="k"><small>Entrega</small><b style="${late?'color:var(--danger)':''}">${fmtLong(l.due)}</b></span>`:''}${(l.team||[]).length?`<span><small>Equipe</small>${avs(l.team)}</span>`:''}${(l.freelas||[]).filter(flById).length?`<span><small>Freelancers</small><span class="avs">${l.freelas.map(flById).filter(Boolean).map(flAv).join('')}</span></span>`:''}${(l.gear||[]).length?`<span><small>Equipamentos</small>${l.gear.filter(eqById).length} reservado${l.gear.filter(eqById).length===1?'':'s'}</span>`:''}${[...(l.gear||[]).filter(id=>clashes('gear',id,l).length||eqById(id)?.status==='manutencao'),...(l.freelas||[]).filter(id=>clashes('freelas',id,l).length),...(l.team||[]).filter(id=>clashes('team',id,l).length)].length?'<span class="conf" title="Algum equipamento, freelancer ou pessoa da equipe está em outro projeto na mesma data ou em manutenção">Conflito de agenda</span>':''}<div class="jsx">${lk}<button class="btn sm" data-a="job" data-id="${l.id}">${can('gerenciar_estrutura')?'Editar projeto':'Dados do projeto'}</button></div></div>`;
 }
 function jobCard(l){
   const sp=spaceById(l.spaceId),p=jobProgress(l),late=l.due&&l.due<TODAY&&l.stage!=='entregue';
@@ -2083,7 +2122,7 @@ function jobCard(l){
 function jobsPage(){
   const jobs=S.lists.filter(l=>!U.jk||l.spaceId===U.jk);
   const filt=`<select data-c="filt" data-k="jk" aria-label="Tipo"><option value="">Todos os tipos</option>${S.spaces.map(s=>`<option value="${s.id}" ${U.jk===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>`;
-  return topBar('Projetos',`${jobs.filter(l=>l.stage!=='entregue').length} em andamento`,filt+(can('gerenciar_estrutura')?`<button class="btn primary" data-a="newList">${ic('plus')} Novo projeto</button>`:''))+`<div class="view"><div class="board scroll" data-keep="jobs">${STAGES.map(([k,n,c])=>{const js=jobs.filter(l=>(l.stage||'orcamento')===k).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9'));return `<div class="col" data-jdrop="${k}"><div class="col-h">${pill(n,c)}<span class="count">${js.length}</span>${isAdm()&&js.some(l=>l.valor)?`<span class="col-est">${fmtNum(js.reduce((a,l)=>a+(+l.valor||0),0),'R$')}</span>`:''}</div><div class="col-b">${js.map(jobCard).join('')}</div></div>`}).join('')}</div></div>`;
+  return topBar('Projetos',`${jobs.filter(l=>l.stage!=='entregue').length} em andamento`,filt+(can('gerenciar_estrutura')?`<button class="btn primary" data-a="newList">${ic('plus')} Novo projeto</button>`:''))+`<div class="jstages" role="navigation" aria-label="Etapas">${STAGES.map(([k,n,c])=>`<button class="jsg" data-a="jStage" data-k="${k}" style="--c:${c}"><i></i>${n}<b>${jobs.filter(l=>(l.stage||'orcamento')===k).length}</b></button>`).join('')}</div><div class="view"><div class="board scroll jboard" data-keep="jobs">${STAGES.map(([k,n,c])=>{const js=jobs.filter(l=>(l.stage||'orcamento')===k).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9'));return `<div class="col ${js.length?'':'empty-col'}" id="stg-${k}" data-jdrop="${k}"><div class="col-h">${pill(n,c)}<span class="count">${js.length}</span>${isAdm()&&js.some(l=>l.valor)?`<span class="col-est">${fmtNum(js.reduce((a,l)=>a+(+l.valor||0),0),'R$')}</span>`:''}</div><div class="col-b">${js.map(jobCard).join('')}</div></div>`}).join('')}</div></div>`;
 }
 function agendaPage(){
   const mo=U.agMonth||TODAY.slice(0,7),[y,m]=mo.split('-').map(Number),first=new Date(y,m-1,1),gs=addDays(iso(first),-first.getDay());
@@ -2749,6 +2788,9 @@ const A={
   go:el=>{U.page=el.dataset.p;U.side=false;render();if(U.page==='chat')chatScrollBottom()},
   loc:el=>{U.page='work';U.loc={t:el.dataset.t,id:el.dataset.id};U.side=false;render()},
   view:el=>{U.view=el.dataset.v;render()},
+  jStage:el=>{const c=document.getElementById('stg-'+el.dataset.k);if(c)c.scrollIntoView({behavior:'smooth',block:'start',inline:'start'})},
+  jsTog:()=>{U.jsOpen=!U.jsOpen;render()},
+  tbTog:()=>{U.tbOpen=!U.tbOpen;render()},
   side:()=>{U.side=!U.side;document.body.classList.toggle('side-open',U.side)},
   expand:el=>{U.expanded[el.dataset.id]=U.expanded[el.dataset.id]===false;render()},
   theme:()=>{U.theme=U.theme==='dark'?'light':'dark';applyTheme();saveU()},
