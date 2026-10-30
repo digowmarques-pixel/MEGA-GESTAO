@@ -4,7 +4,7 @@
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.MegaCore = factory();
 })(typeof self !== 'undefined' ? self : this, function () {
-  const COLS = ['tags', 'spaces', 'lists', 'tasks', 'notifs', 'autos', 'goals', 'docs', 'equip', 'freelas', 'meetings'];
+  const COLS = ['tags', 'spaces', 'lists', 'tasks', 'notifs', 'autos', 'goals', 'docs', 'equip', 'freelas', 'meetings', 'facc', 'fcat', 'ftx'];
   const DAY = 864e5;
 
   const PERMS = [
@@ -24,7 +24,7 @@
     lider: { ver_todos_espacos: true, criar_tarefas: true, editar_todas: true, excluir_tarefas: true, gerenciar_estrutura: true, ver_painel: true, gerenciar_metas: true, gerenciar_automacoes: true, editar_documentos: true, gerenciar_recursos: true },
   };
 
-  const emptyWs = () => ({ tags: [], spaces: [], lists: [], tasks: [], notifs: [], autos: [], goals: [], docs: [], equip: [], freelas: [], meetings: [] });
+  const emptyWs = () => ({ tags: [], spaces: [], lists: [], tasks: [], notifs: [], autos: [], goals: [], docs: [], equip: [], freelas: [], meetings: [], facc: [], fcat: [], ftx: [] });
   const emptyDb = () => ({ version: 1, users: [], sessions: {}, ws: emptyWs() });
   const isAdmin = u => !!u && u.role === 'admin';
   const can = (u, p) => isAdmin(u) || !!(u && u.perms && u.perms[p]);
@@ -68,6 +68,8 @@
       freelas: isAdmin(u) ? ws.freelas : ws.freelas.map(hideFl),
       // agenda de reuniões e negociações: só administradores
       meetings: isAdmin(u) ? ws.meetings : [],
+      // financeiro (contas, categorias e lançamentos): só administradores
+      facc: isAdmin(u) ? ws.facc : [], fcat: isAdmin(u) ? ws.fcat : [], ftx: isAdmin(u) ? ws.ftx : [],
       members: db.users.filter(x => x.active !== false).map(memberView),
     };
   }
@@ -167,6 +169,8 @@
       put('freelas', x);
     }
 
+    const NO_FIN = 'Apenas administradores acessam o financeiro.';
+    for (const c of ['facc', 'fcat', 'ftx']) for (const x of arr(up[c])) { if (!okItem(x)) continue; if (!isAdmin(u)) { denied.add(NO_FIN); continue; } put(c, x); }
     for (const x of arr(up.meetings)) { if (!okItem(x)) continue; if (!isAdmin(u)) { denied.add('Apenas administradores acessam as reuniões.'); continue; } put('meetings', x); }
 
     // exclusões
@@ -193,6 +197,7 @@
       if (!can(u, 'gerenciar_recursos')) { denied.add(NO_RES); continue; }
       drop(c, id); ws.lists.forEach(l => { if (Array.isArray(l[field])) l[field] = l[field].filter(v => v !== id); });
     }
+    for (const c of ['facc', 'fcat', 'ftx']) for (const id of arr(del[c])) { if (!find(c, id)) continue; if (!isAdmin(u)) { denied.add(NO_FIN); continue; } drop(c, id); }
     for (const id of arr(del.meetings)) { if (!find('meetings', id)) continue; if (!isAdmin(u)) { denied.add('Apenas administradores acessam as reuniões.'); continue; } drop('meetings', id); }
     for (const id of arr(del.goals)) { if (!find('goals', id)) continue; if (!can(u, 'gerenciar_metas') || (!isAdmin(u) && isFinGoal(find('goals', id)))) { denied.add('Você não tem permissão para alterar metas.'); continue; } drop('goals', id); }
     for (const id of arr(del.autos)) { if (!find('autos', id)) continue; if (!can(u, 'gerenciar_automacoes')) { denied.add('Você não tem permissão para alterar automações.'); continue; } drop('autos', id); }

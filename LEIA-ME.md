@@ -13,6 +13,7 @@ Sistema de gestão para produtora de vídeo (publicidade, eventos e casamentos),
 - **Equipamentos**: cadastro de câmeras, lentes, drones, áudio, luz e suportes, com nº de série e situação (em uso ou em manutenção). A reserva é feita no projeto e vale para os dias de captação. O sistema avisa quando o mesmo equipamento está em dois projetos com datas que se cruzam, e equipamentos em manutenção não podem ser reservados. Os equipamentos reservados entram no checklist da tarefa "Checar e carregar equipamentos".
 - **Freelancers**: cadastro com função, telefone, e-mail, cidade, diária e PIX (diária e PIX só administradores veem). A escala é feita no projeto, com aviso de conflito de datas e cálculo do custo (diária × dias de captação).
 - **Reuniões** (só administradores): agenda comercial com tipo, data, hora, local ou link, cliente e contato. Depois da reunião, registra-se a situação, o resumo, a chance de fechar (Frio, Morno, Interessado, Quente, Fechado ou Perdido), o valor estimado, o próximo passo, a data de retorno e as pendências (o que enviar, o que pedir ao cliente e o que fazer), cada uma com responsável e prazo. A página mostra reuniões que já passaram sem resultado registrado, pendências atrasadas, retornos combinados, o valor em negociação ponderado pela chance e a taxa de fechamento. Um negócio fechado vira projeto com um clique.
+- **Financeiro** (só administradores): contas (conta PJ, conta digital, caixa) com saldo atual e previsto; receitas e despesas com categorias de produtora, situação (pago ou pendente), despesas fixas (repetem todo mês) e parceladas; a pagar e a receber com atrasados em destaque; resumo do mês com entradas e saídas dos últimos 6 meses e despesas por categoria. Ligado aos projetos: parcelas do cliente (entrada + restante), custos dos freelas com um clique e lucro e margem por projeto e por tipo.
 - **Mensagens**: chat interno com o canal Geral (toda a equipe), conversas privadas entre duas pessoas (ninguém mais vê, nem administradores) e grupos criados por qualquer pessoa. Contador de não lidas no menu, aviso de mensagem nova, links clicáveis, apagar a própria mensagem e carregar mensagens antigas. O histórico guarda as últimas 20 mil mensagens.
 - **Tarefas**: status do fluxo de vídeo (A fazer, Em produção, Revisão interna, Aprovação do cliente, Ajustes, Concluído), link do arquivo ou da revisão, contador de rodadas de revisão do cliente, checklist, comentários e cronômetro.
 
@@ -44,7 +45,8 @@ Tudo que envolve dinheiro é **exclusivo dos administradores**, inclusive para f
 - valor e situação do pagamento dos projetos, e os totais em R$ do funil de projetos;
 - diária e PIX dos freelancers, e o custo com freelancers de cada projeto;
 - metas financeiras (qualquer meta com resultado em R$);
-- toda a agenda de reuniões, negociações e pendências comerciais.
+- toda a agenda de reuniões, negociações e pendências comerciais;
+- todo o financeiro: contas, categorias, receitas, despesas e lucro por projeto.
 
 O servidor nem envia esses dados para o navegador dos funcionários, e recusa qualquer tentativa de alterá-los.
 
