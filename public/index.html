@@ -483,6 +483,13 @@ table.tt{border-collapse:separate;border-spacing:0;width:100%;min-width:1080px;b
 .pr:hover,.pr.sel{background:var(--surface-2)}
 .pr span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pr small{color:var(--faint);font-size:11.5px}
+#rem-stack{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:65;display:flex;flex-direction:column;gap:10px;width:min(360px,calc(100% - 32px))}
+.remc{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--brand,#F5C400);border-radius:12px;box-shadow:var(--shadow-lg);padding:12px 14px;display:flex;flex-direction:column;gap:6px;animation:remin .25s ease}
+.remc small{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}.remc b{font-size:15px}.remc span{font-size:13px;color:var(--muted);overflow-wrap:anywhere}.remc a{color:inherit;text-decoration:underline}
+.remc .acts{display:flex;gap:8px;margin-top:4px}
+@keyframes remin{from{transform:translateY(12px);opacity:0}}
+.calrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.calrow a.btn{text-decoration:none;color:var(--fg)}
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 16px;border-radius:9px;font-weight:600;font-size:13px;z-index:60;box-shadow:var(--shadow-lg);max-width:calc(100% - 32px)}
 .tpl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tpl label{border:1px solid var(--line);border-radius:9px;padding:9px 10px;cursor:pointer;display:flex;gap:8px;align-items:flex-start;font-size:13px}
@@ -826,7 +833,7 @@ body.np-recursos [data-a="eqNew"],body.np-recursos [data-a="flNew"]{display:none
 <div class="scrim" data-a="side"></div>
 <div id="drawer" hidden></div>
 <div id="modal" hidden></div>
-<div id="toast" hidden></div>
+<div id="toast" hidden></div><div id="rem-stack" aria-live="assertive"></div>
 <div id="auth" hidden></div>
 
 <script src="core.js"></script>
@@ -861,6 +868,7 @@ home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>',
 inbox:'<path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6z"/>',
 board:'<rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/>',
 list:'<path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/>',
+bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
 cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
 gantt:'<path d="M3 3v18"/><rect x="6" y="5" width="8" height="3.5" rx="1"/><rect x="10" y="10.5" width="10" height="3.5" rx="1"/><rect x="7" y="16" width="7" height="3.5" rx="1"/>',
 table:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/>',
@@ -2107,6 +2115,47 @@ function pendRowHTML(x,m){
   const late=!x.done&&x.due&&x.due<TODAY;
   return `<div class="pend ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} data-c="pendTog" data-m="${m.id}" data-p="${x.id}" aria-label="Marcar como feita"><span class="ptype ${x.type}">${esc((PTYPES.find(t=>t[0]===x.type)||PTYPES[0])[1])}</span><span class="pt"><b>${esc(x.text)}</b><button data-a="meet" data-id="${m.id}">${esc(m.title)}${m.client&&!m.title.includes(m.client)?' · '+esc(m.client):''}</button></span>${x.owner?av(x.owner):''}${x.due?`<span class="due ${late?'late':x.due===TODAY&&!x.done?'today':''}">${fmtDate(x.due)}</span>`:''}</div>`;
 }
+/* lembretes de reunião: aviso na tela + notificação do aparelho, enquanto o sistema está aberto */
+const REM_OPTS=[[0,'Sem lembrete'],[5,'5 minutos antes'],[10,'10 minutos antes'],[15,'15 minutos antes'],[30,'30 minutos antes'],[60,'1 hora antes'],[120,'2 horas antes'],[1440,'1 dia antes']];
+const remOf=m=>m.remind==null||m.remind===''?15:+m.remind;
+const meetStart=m=>m.date&&m.time?new Date(m.date+'T'+m.time):null;
+const remTxt=r=>r>=1440?'1 dia':r>=60?r/60+' hora'+(r>60?'s':''):r+' minutos';
+const notifOk=()=>'Notification' in window&&Notification.permission==='granted';
+function notifHint(){
+  if(!('Notification' in window))return '<p class="muted" style="font-size:12.5px">Este navegador não mostra notificações. O lembrete aparece na tela do sistema.</p>';
+  if(Notification.permission==='granted')return '';
+  if(Notification.permission==='denied')return '<p class="muted" style="font-size:12.5px">As notificações estão bloqueadas neste navegador. Libere nas configurações do site para receber o aviso fora da tela do sistema.</p>';
+  return `<div class="calrow">Para o aviso aparecer mesmo com outra janela aberta: <button type="button" class="btn sm" data-a="notifOn">${ic('bell')} Ativar notificações</button></div>`;
+}
+function remSeen(k,mark){try{const o=JSON.parse(localStorage.getItem('mega-rem')||'{}');if(mark){o[k]=Date.now();for(const x in o)if(Date.now()-o[x]>3*864e5)delete o[x];localStorage.setItem('mega-rem',JSON.stringify(o))}return !!o[k]}catch(e){return !!mark}}
+function checkReminders(){
+  if(!ME||!isAdm())return;const now=Date.now();
+  S.meetings.forEach(m=>{const st=meetStart(m),r=remOf(m);
+    if(!st||!r||!['agendada','remarcada'].includes(m.status)||!(m.people||[]).includes(S.me))return;
+    const t=st.getTime(),k=[m.id,m.date,m.time,r].join('|');
+    if(now>=t-r*60000&&now<t+10*60000&&!remSeen(k)){remSeen(k,true);showReminder(m,t)}});
+}
+function beep(){try{const c=new (window.AudioContext||window.webkitAudioContext)();[0,.25].forEach(d=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.setValueAtTime(.0001,c.currentTime+d);g.gain.exponentialRampToValueAtTime(.25,c.currentTime+d+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+d+.2);o.connect(g).connect(c.destination);o.start(c.currentTime+d);o.stop(c.currentTime+d+.22)})}catch(e){}}
+function showReminder(m,t){
+  const mins=Math.round((t-Date.now())/60000),when=mins>0?`começa em ${mins>=60?remTxt(mins>=1440?1440:Math.round(mins/60)*60):mins+' min'}, às ${m.time}`:`começou às ${m.time}`;
+  const isUrl=/^https?:\/\//i.test(m.place||'');
+  const el=document.createElement('div');el.className='remc';el.setAttribute('role','alert');
+  el.innerHTML=`<small>${ic('bell')} Lembrete de reunião</small><b>${esc(m.title)}</b><span>${fmtDate(m.date)} · ${when}${m.client?' · '+esc(m.client):''}</span>${m.place?`<span>${isUrl?`<a href="${esc(m.place)}" target="_blank" rel="noopener">${esc(m.place)}</a>`:esc(m.place)}</span>`:''}<div class="acts"><button class="btn primary sm" data-a="remOpen" data-id="${m.id}">Abrir reunião</button><button class="btn ghost sm" data-a="remClose">Dispensar</button></div>`;
+  document.getElementById('rem-stack').appendChild(el);beep();
+  if(notifOk()){const o={body:`${when[0].toUpperCase()+when.slice(1)}${m.place?' · '+m.place:''}`,tag:'meet-'+m.id,icon:'icons/icon-192.png',badge:'icons/icon-192.png',requireInteraction:true,data:{meet:m.id}};
+    const fb=()=>{try{const n=new Notification(m.title,o);n.onclick=()=>{window.focus();n.close()}}catch(e){}};
+    navigator.serviceWorker&&navigator.serviceWorker.controller?navigator.serviceWorker.ready.then(r=>r.showNotification(m.title,o)).catch(fb):fb()}
+}
+/* agenda do celular: evento com alarme, avisa mesmo com o sistema fechado */
+const calStamp=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'T'+pad(d.getHours())+pad(d.getMinutes())+'00';
+const calEnd=m=>new Date(meetStart(m).getTime()+(+m.dur||60)*60000);
+const calDesc=m=>[m.client&&'Cliente: '+m.client,m.phone&&'Telefone: '+m.phone,m.notes].filter(Boolean).join('\n');
+const gcalUrl=m=>'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(m.title)+'&dates='+calStamp(meetStart(m))+'/'+calStamp(calEnd(m))+'&ctz=America/Sao_Paulo&details='+encodeURIComponent(calDesc(m))+'&location='+encodeURIComponent(m.place||'');
+function meetIcs(m){
+  const e=x=>String(x||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/([,;])/g,'\\$1'),r=remOf(m)||15;
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MEGA Gestao//PT-BR','BEGIN:VEVENT','UID:'+m.id+'@mega-gestao','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z','DTSTART:'+calStamp(meetStart(m)),'DTEND:'+calStamp(calEnd(m)),'SUMMARY:'+e(m.title),'LOCATION:'+e(m.place),'DESCRIPTION:'+e(calDesc(m)),'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+e(m.title),'TRIGGER:-PT'+r+'M','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download=(m.title.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w\s-]/g,'').trim()||'reuniao')+'.ics';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+}
 function meetPage(){
   const ms=[...S.meetings].sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
   const wkEnd=addDays(TODAY,6),live=m=>m.status!=='cancelada';
@@ -2118,7 +2167,7 @@ function meetPage(){
   const decided=S.meetings.filter(m=>['fechado','perdido'].includes(m.chance)),won=decided.filter(m=>m.chance==='fechado').length;
   const follow=S.meetings.filter(m=>m.followUp&&openDeal(m)).sort((a,b)=>a.followUp.localeCompare(b.followUp));
   const grp=(t,list,bad)=>list.length?`<div class="grp-l ${bad?'bad':''}">${t} <span class="count">${list.length}</span></div>${list.map(meetRow).join('')}`:'';
-  return topBar('Reuniões','Agenda comercial e acompanhamento · só administradores veem',`<button class="btn primary" data-a="meetNew">${ic('plus')} Nova reunião</button>`)+`<div class="page scroll" data-keep="page">
+  return topBar('Reuniões','Agenda comercial e acompanhamento · só administradores veem',`${'Notification' in window&&Notification.permission==='default'?`<button class="btn" data-a="notifOn">${ic('bell')} Ativar lembretes</button>`:''}<button class="btn primary" data-a="meetNew">${ic('plus')} Nova reunião</button>`)+`<div class="page scroll" data-keep="page">
   <div class="kpis">
     <div class="kpi"><small>Reuniões hoje</small><b>${ms.filter(m=>m.date===TODAY&&live(m)).length}</b><span>${ms.filter(m=>m.date>TODAY&&m.date<=wkEnd&&live(m)).length} nos próximos 7 dias</span></div>
     <div class="kpi ${lateP.length?'bad':''}"><small>Pendências abertas</small><b>${pend.length}</b><span>${lateP.length} atrasada${lateP.length===1?'':'s'}</span></div>
@@ -2144,7 +2193,9 @@ function meetModal(m){
   const opt=(arr,v)=>arr.map(([k,n])=>`<option value="${k}" ${k===(v||'')?'selected':''}>${n}</option>`).join('');
   openModal(`<form class="md wide" data-form="meet" data-id="${isNew?'':m.id}" aria-label="Reunião"><h2>${isNew?'Nova reunião':esc(m.title)}</h2>
     <div class="row"><div class="f"><label for="mt-title">Assunto</label><input id="mt-title" required value="${esc(m.title)}" placeholder="Ex.: Apresentação de proposta – Loja Bella" ${isNew?'autofocus':''}></div><div class="f"><label for="mt-kind">Tipo</label><select id="mt-kind">${opt(MKINDS,m.kind)}</select></div></div>
-    <div class="row"><div class="f"><label for="mt-date">Data</label><input type="date" id="mt-date" required value="${m.date}"></div><div class="f"><label for="mt-time">Horário</label><input type="time" id="mt-time" value="${esc(m.time||'')}"></div></div>
+    <div class="row"><div class="f"><label for="mt-date">Data</label><input type="date" id="mt-date" required value="${m.date}"></div><div class="f"><label for="mt-time">Horário</label><input type="time" id="mt-time" value="${esc(m.time||'')}"></div><div class="f"><label for="mt-remind">Lembrete</label><select id="mt-remind">${REM_OPTS.map(([k,n])=>`<option value="${k}" ${k===remOf(m)?'selected':''}>${n}</option>`).join('')}</select></div></div>
+    ${notifHint()}
+    ${!isNew&&m.time?`<div class="calrow">Colocar na agenda do celular (avisa mesmo com o sistema fechado): <a class="btn ghost sm" href="${gcalUrl(m)}" target="_blank" rel="noopener">${ic('cal')} Google Agenda</a><button type="button" class="btn ghost sm" data-a="meetIcs" data-id="${m.id}">${ic('cal')} iPhone / Outlook (.ics)</button></div>`:''}
     <div class="f"><label for="mt-place">Local ou link</label><input id="mt-place" value="${esc(m.place||'')}" placeholder="Endereço, Google Meet, Zoom…"></div>
     <div class="sec-t">Cliente ou contato</div>
     <div class="row"><div class="f"><label for="mt-client">Nome</label><input id="mt-client" value="${esc(m.client||'')}"></div><div class="f"><label for="mt-phone">Telefone / WhatsApp</label><input id="mt-phone" value="${esc(m.phone||'')}"></div></div>
@@ -2706,6 +2757,10 @@ const A={
   chatEditGroup:()=>{const c=chatCurrentConv();if(c&&c.type==='group')chatGroupModal(c)},
   chatLeave:()=>{const c=chatCurrentConv();if(!c)return;confirmBox('Sair do grupo?',`Você deixa de ver as mensagens de “${c.name}”.`,async()=>{const r=await api('POST','/api/chat/leave',{id:c.id});if(r.status!==200){toast(r.json.error||'Não foi possível sair');return}CHAT.convs=CHAT.convs.filter(x=>x!==c);U.chatSel=null;U.chatOpen=false},'Sair')},
   meet:el=>meetModal(S.meetings.find(m=>m.id===el.dataset.id)),
+  meetIcs:el=>{const m=S.meetings.find(x=>x.id===el.dataset.id);if(m&&m.time)meetIcs(m)},
+  remOpen:el=>{el.closest('.remc').remove();const m=S.meetings.find(x=>x.id===el.dataset.id);if(m){U.page='meet';render();meetModal(m)}},
+  remClose:el=>el.closest('.remc').remove(),
+  notifOn:()=>{if(!('Notification' in window))return toast('Este navegador não mostra notificações');Notification.requestPermission().then(p=>{toast(p==='granted'?'Lembretes ativados neste aparelho':'Notificações não permitidas. O aviso continua aparecendo na tela do sistema.');document.querySelectorAll('[data-a=notifOn]').forEach(b=>{const c=b.closest('.calrow');(c||b).remove()});render()})},
   meetNew:()=>meetModal(null),
   mAll:()=>{U.mAll=!U.mAll;render()},
   pendAdd:()=>{document.getElementById('pend-rows').insertAdjacentHTML('beforeend',pendEditRow(null));const r=document.querySelectorAll('#pend-rows .pend-row');r[r.length-1].querySelector('[name=p-text]').focus()},
@@ -2907,7 +2962,7 @@ const F={
     const people=[...f.querySelectorAll('input[name=mt-people]:checked')].map(c=>c.value);
     const pend=[...f.querySelectorAll('.pend-row')].map(r=>({id:r.querySelector('[name=p-id]').value,type:r.querySelector('[name=p-type]').value,text:r.querySelector('[name=p-text]').value.trim(),owner:r.querySelector('[name=p-owner]').value,due:r.querySelector('[name=p-due]').value,done:r.querySelector('[name=p-done]').checked})).filter(x=>x.text);
     const data={title,kind:v('mt-kind'),date:v('mt-date')||TODAY,time:v('mt-time'),place:v('mt-place').trim(),client:v('mt-client').trim(),phone:v('mt-phone').trim(),email:v('mt-email').trim(),listId:v('mt-list'),
-      people:people.length?people:[S.me],status:v('mt-status'),chance:v('mt-chance'),notes:v('mt-notes'),valor:+v('mt-valor')||0,next:v('mt-next').trim(),followUp:v('mt-follow'),pend};
+      people:people.length?people:[S.me],remind:+v('mt-remind'),status:v('mt-status'),chance:v('mt-chance'),notes:v('mt-notes'),valor:+v('mt-valor')||0,next:v('mt-next').trim(),followUp:v('mt-follow'),pend};
     if(data.chance==='fechado'||data.chance==='perdido')data.status=data.status==='agendada'?'realizada':data.status;
     const old=id?S.meetings.find(x=>x.id===id):null,oldIds=new Set((old?.pend||[]).map(x=>x.id+x.owner));
     pend.filter(x=>!oldIds.has(x.id+x.owner)&&x.owner!==S.me&&!x.done).forEach(x=>notify(x.owner,`${mem(S.me).name} passou uma pendência para você: “${x.text}” (${title})`,null));
@@ -3044,6 +3099,7 @@ applyTheme();
 setInterval(()=>{if(ME&&MODE==='remote'&&!document.hidden)sync(true)},6000);
 /* mensagens: a cada 2,5 s com o chat aberto, a cada 7,5 s nas outras telas */
 let chatTick=0;
+setInterval(checkReminders,20000);setTimeout(checkReminders,3000);
 setInterval(()=>{if(!ME||document.hidden)return;chatTick++;if(U.page==='chat'||chatTick%3===0)chatPoll()},2500);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ME)chatPoll()});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ME&&MODE==='remote')sync(true)});
