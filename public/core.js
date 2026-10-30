@@ -283,8 +283,90 @@
       if (method === 'POST' && path === '/api/sync') {
         const ch = body.changes;
         const denied = ch ? applyChanges(db, u, ch) : [];
-        if (!ch && body.version === db.version) return R(200, { same: true, version: db.version });
-        return R(200, { version: db.version, state: viewFor(db, u), user: publicUser(u), denied });
+        // sem alterações enviadas = só leitura: o servidor não precisa gravar o banco
+        if (!ch && body.version === db.version) return R(200, { same: true, version: db.version }, { readonly: true });
+        return R(200, { version: db.version, state: viewFor(db, u), user: publicUser(u), denied }, { readonly: !ch });
+      }
+
+      /* ---------- mensagens (chat) ----------
+         Ficam fora do estado geral sincronizado: têm rotas próprias e só vão para quem participa da conversa. */
+      if (method === 'POST' && path.indexOf('/api/chat/') === 0) {
+        if (!db.chat) db.chat = { ver: 1, convs: [{ id: 'geral', type: 'all', name: 'Geral', createdAt: now }], msgs: [], reads: {} };
+        const ch = db.chat, route = path.slice(10);
+        const canSee = c => c.type === 'all' || arr(c.members).includes(u.id);
+        const pub = c => ({ id: c.id, type: c.type, name: c.name || '', members: arr(c.members), createdBy: c.createdBy || null, lastAt: c.lastAt || 0 });
+        const findConv = id => { const c = ch.convs.find(x => x.id === id); return c && canSee(c) ? c : null; };
+        const NF = R(404, { error: 'Conversa não encontrada.' });
+
+        if (route === 'poll') {
+          if (body.ver === ch.ver) return R(200, { same: true, ver: ch.ver }, { readonly: true });
+          const vs = ch.convs.filter(canSee), ids = new Set(vs.map(c => c.id)), since = +body.since || 0;
+          let msgs;
+          if (since) msgs = ch.msgs.filter(m => ids.has(m.convId) && (m.at > since || (m.upd || 0) > since));
+          else {
+            // primeira carga: as últimas 150 de cada conversa
+            const per = {}; msgs = [];
+            for (let i = ch.msgs.length - 1; i >= 0; i--) { const m = ch.msgs[i]; if (!ids.has(m.convId)) continue; per[m.convId] = (per[m.convId] || 0) + 1; if (per[m.convId] <= 150) msgs.push(m); }
+            msgs.reverse();
+          }
+          return R(200, { ver: ch.ver, now, convs: vs.map(pub), msgs, reads: ch.reads[u.id] || {} }, { readonly: true });
+        }
+        if (route === 'history') {
+          const c = findConv(body.convId); if (!c) return NF;
+          const list = ch.msgs.filter(m => m.convId === c.id && m.at < (+body.before || now));
+          return R(200, { msgs: list.slice(-100), more: list.length > 100 }, { readonly: true });
+        }
+        if (route === 'send') {
+          const text = String(body.text || '').trim().slice(0, 4000);
+          if (!text) return R(400, { error: 'Escreva uma mensagem.' });
+          let c;
+          if (body.to) {
+            const other = db.users.find(x => x.id === body.to && x.active !== false);
+            if (!other || other.id === u.id) return R(400, { error: 'Pessoa não encontrada.' });
+            const key = [u.id, other.id].sort().join(':');
+            c = ch.convs.find(x => x.type === 'dm' && x.key === key);
+            if (!c) { c = { id: 'dm' + token().slice(0, 12), type: 'dm', key, members: [u.id, other.id], createdAt: now }; ch.convs.push(c); }
+          } else { c = findConv(body.convId); if (!c) return NF; }
+          const m = { id: 'm' + token().slice(0, 14), convId: c.id, from: u.id, text, at: now };
+          ch.msgs.push(m);
+          if (ch.msgs.length > 20000) ch.msgs.splice(0, ch.msgs.length - 20000);
+          c.lastAt = now; (ch.reads[u.id] = ch.reads[u.id] || {})[c.id] = now; ch.ver++;
+          return R(200, { msg: m, conv: pub(c) });
+        }
+        if (route === 'delete') {
+          const m = ch.msgs.find(x => x.id === body.id);
+          if (!m || m.from !== u.id) return R(403, { error: 'Você só pode apagar as suas mensagens.' });
+          m.text = ''; m.deleted = true; m.upd = now; ch.ver++;
+          return R(200, { msg: m });
+        }
+        if (route === 'read') {
+          const c = findConv(body.convId); if (!c) return NF;
+          const r = ch.reads[u.id] = ch.reads[u.id] || {};
+          r[c.id] = Math.max(r[c.id] || 0, Math.min(+body.at || now, now));
+          return R(200, { ok: true });
+        }
+        if (route === 'group') {
+          const name = String(body.name || '').trim().slice(0, 60);
+          if (!name) return R(400, { error: 'Dê um nome ao grupo.' });
+          const members = Array.from(new Set([u.id].concat(arr(body.members)))).filter(id => db.users.some(x => x.id === id && x.active !== false));
+          if (members.length < 2) return R(400, { error: 'Escolha pelo menos uma pessoa para o grupo.' });
+          if (body.id) {
+            const c = findConv(body.id); if (!c || c.type !== 'group') return NF;
+            c.name = name; c.members = members; ch.ver++;
+            return R(200, { conv: pub(c) });
+          }
+          const c = { id: 'g' + token().slice(0, 12), type: 'group', name, members, createdBy: u.id, createdAt: now, lastAt: now };
+          ch.convs.push(c); ch.ver++;
+          return R(200, { conv: pub(c) });
+        }
+        if (route === 'leave') {
+          const c = findConv(body.id); if (!c || c.type !== 'group') return NF;
+          c.members = arr(c.members).filter(x => x !== u.id);
+          if (!c.members.length) { ch.convs = ch.convs.filter(x => x !== c); ch.msgs = ch.msgs.filter(m => m.convId !== c.id); }
+          ch.ver++;
+          return R(200, { ok: true });
+        }
+        return R(404, { error: 'Rota não encontrada.' });
       }
 
       if (path === '/api/users' || path.indexOf('/api/users/') === 0) {

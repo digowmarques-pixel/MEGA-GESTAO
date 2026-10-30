@@ -100,7 +100,7 @@ async function main() {
         const secure = req.secure ? '; Secure' : '';
         if (r.setToken) res.set('Set-Cookie', `${COOKIE}=${r.setToken}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${30 * 86400}${secure}`);
         if (r.clearToken) res.set('Set-Cookie', `${COOKIE}=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`);
-        if (req.method !== 'GET') scheduleSave();
+        if (req.method !== 'GET' && !r.readonly) scheduleSave();
         res.set('Cache-Control', 'no-store');
         res.status(r.status).json(r.json);
       } catch (e) {
