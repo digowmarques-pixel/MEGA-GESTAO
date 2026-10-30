@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MEGA Gestão</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#FFC700">
@@ -824,12 +829,50 @@ body.np-recursos [data-a="eqNew"],body.np-recursos [data-a="flNew"]{display:none
   .cal-g{grid-auto-rows:minmax(80px,1fr)}
   .hbar{grid-template-columns:90px minmax(0,1fr) 36px}
 }
+/* celular: barra de navegação inferior, cabeçalho em duas linhas, campos sem zoom automático */
+#bnav{display:none}
+@media (max-width:860px){
+  body.logged .app{height:calc(100% - 58px - env(safe-area-inset-bottom,0px))}
+  body.logged:has(.chat.sel) .app{height:100%}
+  body.logged #bnav:not(:empty){display:grid}
+  body:has(.chat.sel) #bnav:not(:empty){display:none}
+  #bnav{grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);padding:3px max(6px,env(safe-area-inset-right,0px)) calc(3px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+  #bnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;padding:4px 2px;font-size:11px;font-weight:600;color:var(--muted);position:relative;background:none;border:0;border-radius:10px;-webkit-tap-highlight-color:transparent}
+  #bnav button .ic{width:22px;height:22px}
+  #bnav button.on{color:var(--fg)}
+  #bnav button.on .ic{color:var(--fg);background:var(--brand-soft);box-shadow:0 0 0 5px var(--brand-soft);border-radius:6px}
+  #bnav .badge{position:absolute;top:3px;left:calc(50% + 5px);font-size:10px;line-height:16px;padding:0 5px}
+  body.logged #toast{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+  body.logged #rem-stack{bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+  .top{padding-top:calc(12px + env(safe-area-inset-top,0px));row-gap:10px}
+  .top-t{flex:1 1 calc(100% - 52px)}
+  .top-t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .top h1{white-space:normal;overflow-wrap:anywhere}
+  .top-r:not(:empty){flex:1 1 100%}
+  .top-r>.btn,.top-r>select{flex:1 1 auto;justify-content:center}
+  .btn{min-height:38px}
+  .icon-btn{min-width:38px;min-height:38px}
+  input[type=text],input[type=password],input[type=url],input[type=number],input[type=date],input[type=time],input[type=email],input[type=search],input:not([type]),select,textarea{font-size:16px}
+  .board{scroll-snap-type:x mandatory;scroll-padding-left:16px}
+  .col{flex-basis:min(84vw,320px);scroll-snap-align:start}
+  #modal{padding:max(12px,env(safe-area-inset-top,0px)) 10px 10px}
+  .auth{grid-template-columns:minmax(0,1fr)}
+  .auth-form .tog{white-space:normal;align-items:flex-start}
+  .mini{flex-wrap:wrap;row-gap:2px}
+  .mini .mt{white-space:normal}
+  .mini .crumb{order:9;flex:1 0 100%;padding-left:46px;font-size:12px;max-width:none}
+  .ftn b{white-space:normal;flex-wrap:wrap}
+  .ftr{grid-template-columns:40px minmax(0,1fr) auto;gap:8px;padding:9px 2px}
+  .ftd{font-size:10.5px}
+  .ftv{font-size:13px}
+}
 </style>
 
 <div class="app">
   <aside id="side" aria-label="Navegação"></aside>
   <main id="main"></main>
 </div>
+<nav id="bnav" aria-label="Atalhos"></nav>
 <div class="scrim" data-a="side"></div>
 <div id="drawer" hidden></div>
 <div id="modal" hidden></div>
@@ -1244,7 +1287,7 @@ function chatMarkRead(c){
   if(!last||(CHAT.reads[c.id]||0)>=last.at)return;
   CHAT.reads[c.id]=last.at;api('POST','/api/chat/read',{convId:c.id,at:last.at});
 }
-function chatTitle(){const n=chatUnreadTotal();document.title=(n?`(${n}) `:'')+'MEGA Gestão'}
+function chatTitle(){const n=chatUnreadTotal(),bn=document.getElementById('bnav');if(bn&&ME)bn.innerHTML=bnavHTML();document.title=(n?`(${n}) `:'')+'MEGA Gestão'}
 function chatAfterUpdate(incoming,first){
   const cur=chatCurrentConv(),viewing=U.page==='chat'&&!document.hidden;
   if(viewing&&cur)chatMarkRead(cur);
@@ -1310,7 +1353,7 @@ function chatGroupModal(c){
     <p class="err" role="alert"></p>
     <div class="foot"><button type="button" class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" type="submit">${c?'Salvar':'Criar grupo'}</button></div></form>`);
 }
-function resetSession(){chatReset();document.title='MEGA Gestão';ME=null;S=emptyState();SNAP=null;USERS=null;U.task=null;MLOCK=false;closeModal();document.getElementById('side').innerHTML='';document.getElementById('main').innerHTML='';document.getElementById('drawer').hidden=true}
+function resetSession(){chatReset();document.body.classList.remove('logged');document.getElementById('bnav').innerHTML='';document.title='MEGA Gestão';ME=null;S=emptyState();SNAP=null;USERS=null;U.task=null;MLOCK=false;closeModal();document.getElementById('side').innerHTML='';document.getElementById('main').innerHTML='';document.getElementById('drawer').hidden=true}
 async function enter(user,opts={}){
   resetSession();
   ME=user;S.me=user.id;SNAP=pick(S);VERSION=0;
@@ -1636,6 +1679,10 @@ function sideHTML(){
 /* ============ cabeçalho ============ */
 function elapsed(){if(!S.timer)return'';const s=Math.floor((Date.now()-S.timer.start)/1000);return `${pad(Math.floor(s/3600))}:${pad(Math.floor(s/60)%60)}:${pad(s%60)}`}
 function timerPill(){if(!S.timer)return'';const t=taskById(S.timer.taskId);if(!t)return'';return `<button class="timer-pill" data-a="open" data-id="${t.id}" title="Cronômetro rodando">${ic('clock')}<span data-tick>${elapsed()}</span><span class="tp-t">${esc(t.title)}</span></button><button class="icon-btn" data-a="stopTimer" title="Parar cronômetro" aria-label="Parar cronômetro">${ic('stop')}</button>`}
+function bnavHTML(){
+  const n=chatUnreadTotal(),b=(on,at,i,l,x='')=>`<button type="button" class="${on?'on':''}" ${at}>${ic(i)}<span>${l}</span>${x}</button>`;
+  return b(U.page==='home'&&!U.side,'data-a="go" data-p="home"','home','Início')+b(U.page==='work'&&U.loc.t==='my'&&!U.side,'data-a="loc" data-t="my"','checks','Tarefas')+b(U.page==='jobs'&&!U.side,'data-a="go" data-p="jobs"','film','Projetos')+b(U.page==='chat'&&!U.side,'data-a="go" data-p="chat"','msg','Mensagens',n?`<b class="badge">${n>99?'99+':n}</b>`:'')+b(U.side,'data-a="side"','menu','Menu');
+}
 const topBar=(title,sub,right='')=>`<div class="top"><button class="icon-btn menu" data-a="side" aria-label="Abrir menu">${ic('menu')}</button><div class="top-t">${sub?`<small>${sub}</small>`:''}<h1>${title}</h1></div><div class="top-r">${timerPill()}${right}</div></div>`;
 
 /* ============ área de trabalho ============ */
@@ -2683,7 +2730,7 @@ function render(){
   if(!mem(S.me))S.me=S.members[0]?.id;
   const keep=[...document.querySelectorAll('[data-keep]')].map(el=>[el.dataset.keep,el.scrollTop,el.scrollLeft]);
   const fe=document.activeElement,fk=fe?.dataset?.fk,sel=fk&&fe.selectionStart!=null?[fe.selectionStart,fe.selectionEnd]:null;
-  document.getElementById('side').innerHTML=sideHTML();
+  document.getElementById('side').innerHTML=sideHTML();document.getElementById('bnav').innerHTML=bnavHTML();document.body.classList.add('logged');
   const P={fin:finPage,chat:chatPage,meet:meetPage,equip:equipPage,freelas:freelaPage,jobs:jobsPage,agenda:agendaPage,home:homePage,inbox:inboxPage,work:workPage,dash:dashPage,goals:goalsPage,auto:autoPage,docs:docsPage,team:teamPage,settings:settingsPage}[U.page]||workPage;
   document.getElementById('main').innerHTML=P();
   const dr=document.getElementById('drawer'),t=U.task&&taskById(U.task);

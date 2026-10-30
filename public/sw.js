@@ -1,6 +1,6 @@
 /* MEGA Gestão — permite instalar como aplicativo e abrir a tela mesmo com a internet instável.
    Os dados (rotas /api) nunca ficam em cache: sempre vêm do servidor. */
-const CACHE = 'mega-v2';
+const CACHE = 'mega-v3';
 const SHELL = ['./', 'index.html', 'core.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
