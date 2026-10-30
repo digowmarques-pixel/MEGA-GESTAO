@@ -732,6 +732,65 @@ details.res>summary .muted{font-weight:400;font-size:12.5px}
 .month-bar{display:flex;align-items:center;gap:8px;padding:10px 24px 0;padding-left:max(24px,env(safe-area-inset-left,0px))}
 .month-bar b{font-family:var(--f-display);font-size:17px;min-width:150px;text-align:center}
 @media (max-width:860px){.ftr{grid-template-columns:52px minmax(0,1fr) auto}.ftr .chipst{grid-column:2/-1;justify-self:start}.finbox{grid-template-columns:1fr 1fr}.month-bar{padding-left:16px}}
+.ftv.tr{color:var(--info)}
+.sit{display:none}
+.daybal{display:flex;justify-content:center;padding:4px 0 8px}
+.daybal span{font-size:11.5px;color:var(--muted);background:var(--surface-2);border-radius:99px;padding:2px 12px}
+.daybal b{font-family:var(--f-mono);color:var(--fg)}
+.fin-quick .btn{gap:7px}
+.qd{width:9px;height:9px;border-radius:50%}
+.qd.in{background:var(--ok)}.qd.out{background:var(--danger)}
+.donut{--sz:150px;width:var(--sz);height:var(--sz);border-radius:50%;position:relative;flex:none;max-width:100%}
+.donut.big{--sz:210px}
+.donut>div{position:absolute;inset:18%;background:var(--surface);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px}
+.donut b{font-family:var(--f-mono);font-size:13px}
+.donut.big b{font-size:16px}
+.donut small{font-size:11px;color:var(--muted)}
+.donut-w{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.dleg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:140px;font-size:12.5px}
+.dleg span{display:flex;align-items:center;gap:7px}
+.dleg i{width:9px;height:9px;border-radius:2px;flex:none}
+.dleg em{font-style:normal;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dleg b{font-family:var(--f-mono);font-size:12px}
+.bud{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-top:1px solid var(--line)}
+.bud.tot{border-top:0;padding-top:0}
+.bud span{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px}
+.bud b{font-weight:600;display:flex;gap:6px;align-items:center}
+.bud b i{width:8px;height:8px;border-radius:2px}
+.bud small{color:var(--muted);font-size:12px}
+.bud em{font-style:normal;font-weight:600}
+.bud .meter{margin:3px 0 0}
+.accgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px;margin-bottom:12px}
+.acard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.acard.newc{align-items:center;justify-content:center;color:var(--accent);font-weight:600;border-style:dashed;min-height:170px;gap:10px}
+.acard.newc span{width:44px;height:44px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center}
+.acard.newc:hover{background:var(--accent-soft)}
+.ah{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+.ah i{width:12px;height:12px;border-radius:4px;flex:none}
+.ah b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ar{display:flex;justify-content:space-between;font-size:13px}
+.ar b{font-family:var(--f-mono)}
+.af{display:flex;gap:2px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px;margin-top:4px}
+.invh{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 8px}
+.invh>div{display:flex;flex-direction:column;gap:2px}
+.invh small{font-size:11.5px;color:var(--muted)}
+.invh b{font-size:17px}
+.invh .chipst{align-self:flex-start}
+.rel-tools{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:3px}
+.seg button{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--brand);color:var(--brand-fg)}
+.rel-rosca{display:flex;gap:28px;align-items:center;flex-wrap:wrap;justify-content:center;padding:10px 0}
+.rel-list{flex:1;min-width:min(100%,300px);max-width:520px}
+.rel-list h3{font-size:15px;margin-bottom:8px}
+.rl{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.rl i{width:12px;height:12px;border-radius:50%;flex:none}
+.rl span{flex:1;min-width:0;display:flex;flex-direction:column}
+.rl small{color:var(--muted);font-size:11.5px}
+.rl em{font-style:normal;font-family:var(--f-mono);font-weight:600}
+.lchart{width:100%;min-width:520px;height:auto}
+.lchart text{font-size:11px;fill:var(--muted);font-family:var(--f-mono)}
+.lchart text.cur{fill:var(--fg);font-weight:700}
 body.np-recursos [data-a="eqNew"],body.np-recursos [data-a="flNew"]{display:none!important}
 @media (max-width:860px){.eqrow{grid-template-columns:1fr}}
 @media (max-width:1100px){.grid2{grid-template-columns:1fr}}
@@ -842,6 +901,7 @@ meet:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16
 download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
 send:'<path d="M4 12 20 4l-6 16-3-7z"/><path d="m11 13 9-9"/>',
 wallet:'<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M16 15h2M6 6V5a1 1 0 0 1 1-1h10"/>',
+pie:'<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.3A9 9 0 0 1 20.7 9H15z"/>',
 copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
 };
 const ic=(n,c='')=>`<svg class="ic ${c}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}</svg>`;
@@ -1001,6 +1061,13 @@ function seed(){
     for(let i=-5;i<=-1;i++)if((i+k)%2===0||k<2)FT('in',`${desc}${i<-3?'':' – parcela'}`,Math.round(v*(0.5+((k+i+9)%3)*0.15)),addMonths(m0,i).slice(0,8)+pad(8+k*3),true,{catId:fcn(cat),party,accountId:k%3===2?'fa2':'fa1'})});
   {const g=uid();for(let i=0;i<10;i++){const d=addMonths(m0,i-4).slice(0,8)+'08';FT('out','Sony FX3 (corpo 2)',2100,d,d<TODAY,{catId:fcn('Equipamentos e manutenção'),party:'Loja de câmeras',grp:g,seq:i+1,tot:10})}}
   {const g=uid();for(let i=-2;i<=0;i++){const d=addMonths(m0,i).slice(0,8)+'25';FT('out','Anúncios no Instagram',600,d,d<TODAY,{catId:fcn('Marketing'),party:'Meta',accountId:'fa2',grp:g})}}
+  S0.facc.push({id:'fa4',name:'Cartão Inter PJ',type:'cartao',color:'#DD6B20',initial:0,limit:15000,closeDay:25,dueDay:5,payFrom:'fa1'},{id:'fa5',name:'CDB Produções',type:'invest',color:'#2B6CB0',initial:15000});
+  S0.ftx.forEach(t=>{if(['Adobe Creative Cloud','Frame.io','Anúncios no Instagram'].includes(t.desc)){t.accountId='fa4';t.paid=true;t.paidDate=t.date}});
+  [['Passagem aérea – Convenção Farmacorp',1240,-3,'Deslocamento e alimentação','j5'],['Cartões de memória 256GB (x4)',980,-12,'Equipamentos e manutenção',''],['Almoço da equipe – captação',310,-6,'Deslocamento e alimentação','j1']].forEach(([desc,v,d,cat,lid])=>FT('out',desc,v,addDays(TODAY,d),true,{catId:fcn(cat),listId:lid,accountId:'fa4',paidDate:addDays(TODAY,d)}));
+  {const card=S0.facc.find(a=>a.id==='fa4'),by={};S0.ftx.filter(t=>t.accountId==='fa4').forEach(t=>{const ym=invMonthOf(card,t.date);by[ym]=(by[ym]||0)+t.amount});
+    Object.entries(by).forEach(([ym,v])=>{const due=invDue(card,ym);if(due<TODAY)S0.ftx.push({id:uid(),kind:'tr',desc:`Pagamento da fatura Cartão Inter PJ (${MESL[+ym.slice(5)-1].toLowerCase()})`,amount:v,date:due,paid:true,paidDate:due,accountId:'fa1',toAccountId:'fa4',invoice:ym,catId:'',listId:'',party:'',notes:'',link:''})})}
+  for(let i=-3;i<=-1;i++){const d=addMonths(m0,i).slice(0,8)+'28';S0.ftx.push({id:uid(),kind:'tr',desc:'Reserva para impostos',amount:2000,date:d,paid:true,paidDate:d,accountId:'fa1',toAccountId:'fa5',catId:'',listId:'',party:'',notes:'',link:''})}
+  [['Software e assinaturas',500],['Marketing',800],['Deslocamento e alimentação',2000],['Locação de equipamento',1500],['Freelancers',5000],['Equipamentos e manutenção',3000]].forEach(([n,v])=>{S0.fcat.find(c=>c.name===n).budget=v});
   S0.meetings=[
     M('mt1','Apresentação de campanha – Construtora Horizonte','cliente',-3,'14:00','realizada','Construtora Horizonte',{place:'Escritório do cliente',phone:'(19) 3232-1100',chance:'quente',valor:25000,next:'Enviar proposta revisada com 2 pacotes e ligar na sexta',followUp:D(2),notes:'Gostaram do VT institucional. Querem uma campanha de lançamento do Residencial Aurora: 1 filme de 60s, 4 reels e cobertura do evento de lançamento. Decisão com a diretoria na próxima semana.',pend:[P('enviar','Proposta com 2 opções de pacote',1),P('pedir','Logo em alta e manual da marca',3),P('fazer','Separar referências de filmes imobiliários',0,true)]}),
     M('mt2','Reunião com noivos Camila & Bruno','prospeccao',-1,'19:30','realizada','Camila e Bruno',{place:'Online (Google Meet)',phone:'(19) 99123-4567',chance:'interessado',valor:11000,next:'Aguardar confirmação da data do casamento',followUp:D(5),notes:'Casamento previsto para maio, no campo. Querem filme + teaser + drone. Comparando com mais uma produtora.',pend:[P('enviar','Portfólio de casamentos no campo',-1,true),P('pedir','Data e local confirmados',5)]}),
@@ -2110,7 +2177,56 @@ const fmtK=n=>{n=Math.round(n||0);return Math.abs(n)>=1000?(n/1000).toLocaleStri
 const round2=n=>Math.round(n*100)/100;
 const addMonths=(s0,n)=>{const d=parse(s0),day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+n);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return iso(d)};
 const monthRange=m=>[m+'-01',iso(new Date(+m.slice(0,4),+m.slice(5,7),0))];
-const ACC_TYPES=[['banco','Conta bancária'],['digital','Conta digital / PIX'],['caixa','Caixa (dinheiro)'],['invest','Investimento']];
+const ACC_TYPES=[['banco','Conta bancária'],['digital','Conta digital / PIX'],['caixa','Caixa (dinheiro)'],['invest','Investimento (CDB, poupança…)'],['cartao','Cartão de crédito']];
+const accTypeName=k=>(ACC_TYPES.find(t=>t[0]===k)||[])[1]||'';
+const fcatById=id=>S.fcat.find(c=>c.id===id);
+const faccById=id=>S.facc.find(a=>a.id===id);
+const isCard=a=>!!a&&a.type==='cartao';
+const bankAccs=()=>S.facc.filter(a=>!a.archived&&!isCard(a));
+const cardAccs=()=>S.facc.filter(a=>!a.archived&&isCard(a));
+const isCardTx=t=>t.kind==='out'&&isCard(faccById(t.accountId));
+const ftLate=t=>!t.paid&&t.date<TODAY&&!isCardTx(t);
+const ftSum=(list,kind,paid)=>list.filter(t=>t.kind===kind&&(paid==null||!!t.paid===paid)).reduce((a,t)=>a+(+t.amount||0),0);
+/* efeito de um lançamento no saldo de uma conta: transferência sai de uma e entra na outra */
+const txEff=(t,id)=>{const v=+t.amount||0;if(t.kind==='tr')return (t.accountId===id?-v:0)+(t.toAccountId===id?v:0);return t.accountId===id?(t.kind==='in'?v:-v):0};
+/* saldo realizado até o dia (só o que foi pago, pela data do pagamento) */
+const accBalAt=(a,day)=>(+a.initial||0)+S.ftx.reduce((s0,t)=>t.paid&&(t.paidDate||t.date)<=day?s0+txEff(t,a.id):s0,0);
+const accBalance=a=>accBalAt(a,TODAY);
+/* cartão: em qual fatura cai uma compra e quanto está em aberto */
+function invMonthOf(card,date){const d=parse(date),close=+card.closeDay||25;let m=d.getMonth()+(d.getDate()>close?1:0);if((+card.dueDay||5)<=close)m++;const x=new Date(d.getFullYear(),m,1);return x.getFullYear()+'-'+pad(x.getMonth()+1)}
+const invDue=(card,ym)=>{const last=new Date(+ym.slice(0,4),+ym.slice(5),0).getDate();return ym+'-'+pad(Math.min(+card.dueDay||5,last))};
+function invoiceOf(card,ym){
+  const items=S.ftx.filter(t=>t.kind==='out'&&t.accountId===card.id&&invMonthOf(card,t.date)===ym).sort((x,y)=>x.date.localeCompare(y.date));
+  const total=ftSum(items,'out'),paid=S.ftx.filter(t=>t.kind==='tr'&&t.toAccountId===card.id&&t.invoice===ym&&t.paid).reduce((s0,t)=>s0+(+t.amount||0),0);
+  return {ym,items,total,paid,open:Math.max(0,round2(total-paid)),due:invDue(card,ym)};
+}
+function openInvoices(card){const yms=new Set(S.ftx.filter(t=>t.kind==='out'&&t.accountId===card.id).map(t=>invMonthOf(card,t.date)));return [...yms].sort().map(ym=>invoiceOf(card,ym)).filter(iv=>iv.open>0.004)}
+const invLate=()=>cardAccs().flatMap(c=>openInvoices(c).filter(iv=>iv.due<TODAY).map(iv=>({c,iv})));
+const payAccOf=c=>faccById(c.payFrom)&&!isCard(faccById(c.payFrom))?c.payFrom:bankAccs()[0]?.id;
+/* saldo previsto numa data: realizado até hoje + pendentes vencendo até lá − faturas de cartão que esta conta paga */
+function accForecast(a,day){
+  if(day<TODAY)return accBalAt(a,day);
+  let v=accBalance(a);
+  S.ftx.forEach(t=>{if(!t.paid&&t.date<=day)v+=txEff(t,a.id)});
+  if(!isCard(a))cardAccs().filter(c=>payAccOf(c)===a.id).forEach(c=>openInvoices(c).forEach(iv=>{if(iv.due<=day)v-=iv.open}));
+  return v;
+}
+const finLateCount=()=>isAdm()?S.ftx.filter(ftLate).length+invLate().length:0;
+const MESNOME=ym=>MESL[+ym.slice(5)-1];
+function donut(items,label,big){
+  const total=items.reduce((a,x)=>a+x.v,0);let acc=0;
+  const stops=total?items.map(x=>{const a0=acc/total*100;acc+=x.v;return `${x.color} ${a0}% ${acc/total*100}%`}).join(','):'var(--surface-3) 0 100%';
+  return `<div class="donut ${big?'big':''}" style="background:conic-gradient(${stops})"><div><b>${fmtBRL(total)}</b><small>${label}</small></div></div>`;
+}
+function catTotals(kind,a,b){
+  const by={};S.ftx.filter(t=>t.kind===kind&&t.date>=a&&t.date<=b).forEach(t=>by[t.catId||'']=(by[t.catId||'']||0)+(+t.amount||0));
+  return Object.entries(by).map(([id,v])=>{const c=fcatById(id);return {id,name:c?.name||'Sem categoria',color:c?.color||'#A0AEC0',v}}).sort((x,y)=>y.v-x.v);
+}
+function donutPanel(kind,a,b,title){
+  const items=catTotals(kind,a,b),total=items.reduce((s0,x)=>s0+x.v,0),top=items.slice(0,6);
+  if(items.length>6)top.push({name:'Outras',color:'#A0AEC0',v:items.slice(6).reduce((s0,x)=>s0+x.v,0)});
+  return `<section class="panel"><h2>${title}<button class="btn ghost sm" style="margin-left:auto" data-a="relOpen" data-k="${kind}">Ver relatório</button></h2>${total?`<div class="donut-w">${donut(top,'Total')}<div class="dleg">${top.map(x=>`<span><i style="background:${x.color}"></i><em>${esc(x.name)}</em><b>${Math.round(x.v/total*100)}%</b></span>`).join('')}</div></div>`:`<p class="muted">Nenhuma ${kind==='in'?'receita':'despesa'} neste mês.</p>`}</section>`;
+}
 function finDefaults(){
   const C=(name,kind,color)=>({id:uid(),name,kind,color});
   return {fcat:[C('Casamentos','in','#B83280'),C('Publicidade','in','#2B6CB0'),C('Eventos','in','#C05621'),C('Outras receitas','in','#718096'),
@@ -2118,84 +2234,11 @@ function finDefaults(){
     facc:[{id:uid(),name:'Conta PJ',type:'banco',color:'#12893F',initial:0}]};
 }
 function ensureFin(){if(isAdm()&&!S.fcat.length&&!S.facc.length){const d=finDefaults();S.fcat=d.fcat;S.facc=d.facc;save()}}
-const fcatById=id=>S.fcat.find(c=>c.id===id);
-const faccById=id=>S.facc.find(a=>a.id===id);
-const ftLate=t=>!t.paid&&t.date<TODAY;
-const ftSum=(list,kind,paid)=>list.filter(t=>t.kind===kind&&(paid==null||!!t.paid===paid)).reduce((a,t)=>a+(+t.amount||0),0);
-const accBalance=a=>(+a.initial||0)+S.ftx.filter(t=>t.accountId===a.id&&t.paid&&(t.paidDate||t.date)<=TODAY).reduce((s0,t)=>s0+(t.kind==='in'?1:-1)*(+t.amount||0),0);
-const finLateCount=()=>isAdm()?S.ftx.filter(ftLate).length:0;
 function catForList(l){const sp=spaceById(l.spaceId),n={casamento:'Casamentos',publicidade:'Publicidade',evento:'Eventos'}[sp?.kind]||'Outras receitas';return (S.fcat.find(c=>c.kind==='in'&&c.name===n)||S.fcat.find(c=>c.kind==='in'))?.id||''}
 function finProjStats(l){
   const ins=S.ftx.filter(t=>t.listId===l.id&&t.kind==='in'),outs=S.ftx.filter(t=>t.listId===l.id&&t.kind==='out');
   const contratado=+l.valor||0,lancado=ftSum(ins,'in'),recebido=ftSum(ins,'in',true),custos=ftSum(outs,'out'),receita=Math.max(contratado,lancado),lucro=receita-custos;
   return {contratado,lancado,recebido,aReceber:receita-recebido,custos,custosPagos:ftSum(outs,'out',true),receita,lucro,margem:receita?lucro/receita:0};
-}
-function ftRow(t){
-  const c=fcatById(t.catId),acc=faccById(t.accountId),l=t.listId&&listById(t.listId),late=ftLate(t);
-  return `<div class="ftr" data-a="ftEdit" data-id="${t.id}"><span class="ftd ${late?'late':''}">${fmtDate(t.date)}</span><span class="ftn"><b><span style="overflow:hidden;text-overflow:ellipsis">${esc(t.desc)}</span>${t.tot?`<small>${t.seq}/${t.tot}</small>`:t.grp?`<span title="Repete todo mês" style="display:inline-flex;color:var(--muted)">${ic('repeat','sm')}</span>`:''}</b><small>${c?`<span class="tagc" style="--c:${c.color}">${esc(c.name)}</span>`:''}${acc?esc(acc.name):''}${l?' · '+esc(l.name):''}${t.party?' · '+esc(t.party):''}</small></span><span class="ftv ${t.kind}">${t.kind==='out'?'−':'+'} ${fmtBRL(t.amount)}</span><button class="chipst ${t.paid?'ok':late?'bad':'mut'}" data-a="ftPay" data-id="${t.id}" title="${t.paid?'Marcar como pendente':'Marcar como '+(t.kind==='in'?'recebido':'pago')+' hoje'}">${t.paid?(t.kind==='in'?'Recebido':'Pago'):late?'Atrasado':'Pendente'}</button></div>`;
-}
-function finPage(){
-  ensureFin();
-  const m=U.finMonth||TODAY.slice(0,7),[a,b]=monthRange(m),tab=U.finTab||'resumo',[y,mo]=m.split('-').map(Number);
-  const tabs=[['resumo','Resumo'],['lanc','Lançamentos'],['contas','A pagar e a receber'],['proj','Lucro por projeto'],['config','Contas e categorias']];
-  const fn={resumo:finResumo,lanc:finLanc,contas:finContas,proj:finProj,config:finConfig}[tab]||finResumo;
-  return topBar('Financeiro','Controle financeiro da empresa · só administradores veem',`<div class="res-tools"><button class="btn" data-a="ftNew" data-k="in">${ic('plus')} Receita</button><button class="btn primary" data-a="ftNew" data-k="out">${ic('plus')} Despesa</button></div>`)
-    +`<div class="tabs">${tabs.map(([k,l])=>`<button class="tab ${tab===k?'on':''}" data-a="finTab" data-t="${k}">${l}</button>`).join('')}</div>`
-    +(['resumo','lanc'].includes(tab)?`<div class="month-bar"><button class="icon-btn" data-a="finMonth" data-d="-1" aria-label="Mês anterior">${ic('left')}</button><b>${MESL[mo-1]} ${y}</b><button class="icon-btn" data-a="finMonth" data-d="1" aria-label="Próximo mês">${ic('chev')}</button>${m!==TODAY.slice(0,7)?'<button class="btn sm" data-a="finMonth" data-d="0">Mês atual</button>':''}</div>`:'')
-    +`<div class="page scroll" data-keep="page" style="padding-top:12px">${fn(m,a,b)}</div>`;
-}
-function finResumo(m,a,b){
-  const inM=S.ftx.filter(t=>t.date>=a&&t.date<=b);
-  const recR=ftSum(inM,'in',true),recP=ftSum(inM,'in'),desR=ftSum(inM,'out',true),desP=ftSum(inM,'out');
-  const accs=S.facc.filter(x=>!x.archived),saldo=accs.reduce((s0,x)=>s0+accBalance(x),0);
-  const lateIn=S.ftx.filter(t=>t.kind==='in'&&ftLate(t)),lateOut=S.ftx.filter(t=>t.kind==='out'&&ftLate(t));
-  const prev=saldo+S.ftx.filter(t=>!t.paid&&t.date<=b).reduce((s0,t)=>s0+(t.kind==='in'?1:-1)*(+t.amount||0),0);
-  const months=[];for(let i=5;i>=0;i--){const mm=addMonths(m+'-01',-i).slice(0,7),[x0,x1]=monthRange(mm),l=S.ftx.filter(t=>t.date>=x0&&t.date<=x1);months.push({mm,i:ftSum(l,'in'),o:ftSum(l,'out')})}
-  const mx=Math.max(1,...months.flatMap(x=>[x.i,x.o]));
-  const bycat={};inM.filter(t=>t.kind==='out').forEach(t=>bycat[t.catId]=(bycat[t.catId]||0)+(+t.amount||0));
-  const cats=Object.entries(bycat).sort((x,y)=>y[1]-x[1]),cmx=Math.max(1,...cats.map(c=>c[1]));
-  const soon=S.ftx.filter(t=>!t.paid&&t.date<=addDays(TODAY,7)).sort((x,y)=>x.date.localeCompare(y.date));
-  return `<div class="kpis">
-    <div class="kpi"><small>Saldo em contas hoje</small><b class="num ${saldo<0?'neg':''}" style="font-size:24px">${fmtBRL(saldo)}</b><span>Previsto no fim do mês: ${fmtBRL(prev)}</span></div>
-    <div class="kpi"><small>Receitas do mês</small><b class="num pos" style="font-size:24px">${fmtBRL(recP)}</b><span>${fmtBRL(recR)} já recebido</span></div>
-    <div class="kpi"><small>Despesas do mês</small><b class="num neg" style="font-size:24px">${fmtBRL(desP)}</b><span>${fmtBRL(desR)} já pago</span></div>
-    <div class="kpi"><small>Resultado do mês</small><b class="num ${recP-desP<0?'neg':'pos'}" style="font-size:24px">${fmtBRL(recP-desP)}</b><span>${recP?'Margem de '+Math.round((recP-desP)/recP*100)+'%':'Sem receitas no mês'}</span></div>
-    <div class="kpi ${lateIn.length+lateOut.length?'bad':''}"><small>Atrasados</small><b>${lateIn.length+lateOut.length}</b><span>${fmtBRL(ftSum(lateIn,'in'))} a receber · ${fmtBRL(ftSum(lateOut,'out'))} a pagar</span></div>
-  </div>
-  <div class="grid2">
-    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-      <section class="panel"><h2>Entradas e saídas <span class="count">últimos 6 meses</span></h2>
-        <div class="legend" style="margin-bottom:6px"><span><i style="background:var(--ok)"></i>Receitas</span><span><i style="background:var(--danger)"></i>Despesas</span></div>
-        <div class="fcols">${months.map(x=>`<div class="g" title="${MESL[+x.mm.slice(5)-1]}: receitas ${fmtBRL(x.i)} · despesas ${fmtBRL(x.o)}"><i class="in" style="height:${x.i/mx*100}%"></i><i class="out" style="height:${x.o/mx*100}%"></i></div>`).join('')}</div>
-        <div class="fcols-x">${months.map(x=>`<span class="${x.mm===m?'cur':''}">${MES[+x.mm.slice(5)-1]}<br><small class="num">${fmtK(x.i-x.o)}</small></span>`).join('')}</div>
-        <p class="muted" style="font-size:12px;margin:8px 0 0">Embaixo de cada mês: resultado (receitas − despesas), contando pagos e pendentes.</p>
-      </section>
-      <section class="panel"><h2>Despesas do mês por categoria</h2>${cats.map(([id,v])=>{const c=fcatById(id);return `<div class="hbar" style="grid-template-columns:minmax(0,180px) minmax(0,1fr) 64px"><span class="lb">${esc(c?.name||'Sem categoria')}</span><span class="tr"><i style="width:${v/cmx*100}%;background:${c?.color||'var(--muted)'}"></i></span><span class="v" style="width:auto">${fmtK(v)}</span></div>`}).join('')||'<p class="muted">Nenhuma despesa neste mês.</p>'}</section>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
-      <section class="panel"><h2>Saldo por conta</h2>${accs.map(x=>`<div class="acc"><i style="background:${x.color}"></i><span>${esc(x.name)}<small>${esc((ACC_TYPES.find(t=>t[0]===x.type)||[])[1]||'')}</small></span><b class="${accBalance(x)<0?'neg':''}">${fmtBRL(accBalance(x))}</b></div>`).join('')||'<p class="muted">Cadastre suas contas na aba Contas e categorias.</p>'}</section>
-      <section class="panel"><h2>Atrasados e próximos 7 dias <span class="count">${soon.length}</span></h2>${soon.slice(0,12).map(ftRow).join('')||'<p class="muted">Nada vencendo. Tudo em dia.</p>'}${soon.length>12?`<button class="btn ghost sm" data-a="finTab" data-t="contas">Ver todos</button>`:''}</section>
-    </div>
-  </div>`;
-}
-function finLanc(m,a,b){
-  const F=U.ff||{},q=(F.q||'').toLowerCase();
-  const list=S.ftx.filter(t=>t.date>=a&&t.date<=b&&(!F.k||t.kind===F.k)&&(!F.acc||t.accountId===F.acc)&&(!F.cat||t.catId===F.cat)&&(!F.proj||t.listId===F.proj)&&(!F.st||(F.st==='pago'?t.paid:F.st==='atrasado'?ftLate(t):!t.paid))&&(!q||(t.desc+' '+(t.party||'')).toLowerCase().includes(q))).sort((x,y)=>x.date.localeCompare(y.date));
-  const sel=(k,label,opts)=>`<select data-c="ff" data-k="${k}" aria-label="${label}"><option value="">${label}</option>${opts.map(([v,n])=>`<option value="${v}" ${F[k]===v?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
-  const inT=ftSum(list,'in'),outT=ftSum(list,'out');
-  return `<div class="fin-filters"><input placeholder="Buscar descrição ou fornecedor…" value="${esc(F.q||'')}" data-i="ffq" data-fk="ffq" aria-label="Buscar">
-    ${sel('k','Receitas e despesas',[['in','Só receitas'],['out','Só despesas']])}${sel('st','Todas as situações',[['pago','Pagos ou recebidos'],['pendente','Pendentes'],['atrasado','Atrasados']])}
-    ${sel('acc','Todas as contas',S.facc.map(x=>[x.id,x.name]))}${sel('cat','Todas as categorias',S.fcat.map(c=>[c.id,(c.kind==='in'?'Receita: ':'Despesa: ')+c.name]))}${sel('proj','Todos os projetos',S.lists.map(l=>[l.id,l.name]))}
-    ${Object.values(F).some(Boolean)?'<button class="btn ghost sm" data-a="ffClear">Limpar filtros</button>':''}</div>
-  <section class="panel">${list.map(ftRow).join('')||'<div class="empty"><b>Nenhum lançamento</b>Use “+ Receita” ou “+ Despesa” para lançar.</div>'}
-    ${list.length?`<div class="ftot"><span>Receitas <b class="pos">${fmtBRL(inT)}</b></span><span>Despesas <b class="neg">${fmtBRL(outT)}</b></span><span>Saldo <b class="${inT-outT<0?'neg':'pos'}">${fmtBRL(inT-outT)}</b></span></div>`:''}</section>`;
-}
-function finContas(){
-  const pend=S.ftx.filter(t=>!t.paid).sort((x,y)=>x.date.localeCompare(y.date));
-  const col=(kind,title)=>{const l=pend.filter(t=>t.kind===kind),late=l.filter(ftLate),soon=l.filter(t=>!ftLate(t)&&t.date<=addDays(TODAY,30)),later=l.filter(t=>t.date>addDays(TODAY,30));
-    const g=(t0,arr,bad)=>arr.length?`<div class="grp-l ${bad?'bad':''}">${t0} <span class="count">${arr.length} · ${fmtBRL(ftSum(arr,kind))}</span></div>${arr.map(ftRow).join('')}`:'';
-    return `<section class="panel"><h2>${title} <span class="count">${fmtBRL(ftSum(l,kind))}</span></h2>${g('Atrasados',late,1)}${g('Próximos 30 dias',soon)}${g('Mais adiante',later.slice(0,30))}${l.length?'':'<p class="muted">Nada pendente.</p>'}</section>`};
-  return `<div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))">${col('in','A receber')}${col('out','A pagar')}</div><p class="muted" style="font-size:12.5px">Clique em “Pendente” ou “Atrasado” para marcar como pago ou recebido hoje.</p>`;
 }
 function finProj(){
   const rows=S.lists.map(l=>({l,st:finProjStats(l)})).filter(x=>x.st.receita||x.st.custos).sort((x,y)=>y.st.lucro-x.st.lucro);
@@ -2208,32 +2251,6 @@ function finProj(){
   </tbody></table></div>
   ${rows.length?'':'<div class="empty"><b>Nenhum projeto com valores</b>Defina o valor no projeto e lance as parcelas do cliente e os custos.</div>'}
   <p class="muted" style="font-size:12.5px">Receita = o maior entre o valor do contrato e as parcelas lançadas. Custos = despesas lançadas no projeto (freelas, locação, deslocamento…).</p>`;
-}
-function finConfig(){
-  const used=id=>S.ftx.some(t=>t.catId===id||t.accountId===id);
-  const accRows=S.facc.map(x=>`<div class="strow"><input type="color" value="${x.color}" data-c="faccF" data-f="color" data-id="${x.id}" aria-label="Cor"><input type="text" value="${esc(x.name)}" data-c="faccF" data-f="name" data-id="${x.id}" aria-label="Nome da conta"><select data-c="faccF" data-f="type" data-id="${x.id}" aria-label="Tipo">${ACC_TYPES.map(([k,n])=>`<option value="${k}" ${x.type===k?'selected':''}>${n}</option>`).join('')}</select><label class="muted" style="font-size:12.5px;display:flex;gap:6px;align-items:center">Saldo inicial <input type="number" step="0.01" value="${x.initial||0}" style="width:120px" data-c="faccF" data-f="initial" data-id="${x.id}"></label><span class="num" style="font-size:12.5px">Hoje: ${fmtBRL(accBalance(x))}</span><button class="icon-btn sm" data-a="faccDel" data-id="${x.id}" aria-label="Excluir conta">${ic('trash')}</button></div>`).join('');
-  const catRows=k=>S.fcat.filter(c=>c.kind===k).map(c=>`<div class="strow"><input type="color" value="${c.color}" data-c="fcatF" data-f="color" data-id="${c.id}" aria-label="Cor"><input type="text" value="${esc(c.name)}" data-c="fcatF" data-f="name" data-id="${c.id}" aria-label="Nome da categoria"><span class="count">${S.ftx.filter(t=>t.catId===c.id).length} lançamentos</span><button class="icon-btn sm" data-a="fcatDel" data-id="${c.id}" aria-label="Excluir categoria">${ic('trash')}</button></div>`).join('');
-  return `<section class="panel set-sec"><h2>Contas</h2><p>Saldo inicial é quanto havia na conta quando vocês começaram a usar o sistema.</p>${accRows}<button class="btn ghost sm" data-a="faccAdd">${ic('plus')} Nova conta</button></section>
-  <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))"><section class="panel set-sec"><h2>Categorias de receita</h2>${catRows('in')}<button class="btn ghost sm" data-a="fcatAdd" data-k="in">${ic('plus')} Nova categoria</button></section>
-  <section class="panel set-sec"><h2>Categorias de despesa</h2>${catRows('out')}<button class="btn ghost sm" data-a="fcatAdd" data-k="out">${ic('plus')} Nova categoria</button></section></div>`;
-}
-function ftCatOptions(kind,sel){return S.fcat.filter(c=>c.kind===kind).map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.name)}</option>`).join('')}
-function ftModal(t,kind,pre){
-  ensureFin();
-  const isNew=!t;t=t||{kind:kind||'out',desc:'',amount:'',date:TODAY,paid:false,paidDate:'',accountId:S.facc.find(a=>!a.archived)?.id||'',catId:'',listId:'',party:'',notes:'',link:'',...(pre||{})};
-  const k=t.kind;
-  openModal(`<form class="md wide" data-form="ft" data-id="${isNew?'':t.id}" aria-label="Lançamento"><h2>${isNew?(k==='in'?'Nova receita':'Nova despesa'):'Editar lançamento'}</h2>
-    <div class="roles"><label><input type="radio" name="ft-kind" value="in" ${k==='in'?'checked':''} data-c="ftKind"><span><b>Receita</b><small>Dinheiro que entra</small></span></label><label><input type="radio" name="ft-kind" value="out" ${k==='out'?'checked':''} data-c="ftKind"><span><b>Despesa</b><small>Dinheiro que sai</small></span></label></div>
-    <div class="row"><div class="f"><label for="ft-desc">Descrição</label><input id="ft-desc" required value="${esc(t.desc)}" placeholder="Ex.: Aluguel do estúdio" ${isNew?'autofocus':''}></div><div class="f"><label for="ft-amount">Valor (R$)${isNew?' – total, se for parcelado':''}</label><input type="number" id="ft-amount" required min="0.01" step="0.01" value="${t.amount}"></div></div>
-    <div class="row"><div class="f"><label for="ft-date">Data de vencimento</label><input type="date" id="ft-date" required value="${t.date}"></div><div class="f"><label for="ft-acc">Conta</label><select id="ft-acc">${S.facc.filter(a=>!a.archived||a.id===t.accountId).map(a=>`<option value="${a.id}" ${a.id===t.accountId?'selected':''}>${esc(a.name)}</option>`).join('')}</select></div></div>
-    <div class="row"><div class="f"><label for="ft-cat">Categoria</label><select id="ft-cat">${ftCatOptions(k,t.catId)}</select></div><div class="f"><label for="ft-proj">Projeto (opcional)</label><select id="ft-proj"><option value="">Nenhum</option>${S.lists.map(l=>`<option value="${l.id}" ${l.id===t.listId?'selected':''}>${esc(l.name)}</option>`).join('')}</select></div></div>
-    <div class="row"><div class="f"><label for="ft-party">${k==='in'?'Cliente':'Fornecedor'} (opcional)</label><input id="ft-party" value="${esc(t.party||'')}"></div><div class="f"><label for="ft-link">Link do comprovante ou nota (opcional)</label><input type="url" id="ft-link" value="${esc(t.link||'')}" placeholder="https://"></div></div>
-    <div class="row"><label class="tog" style="color:var(--fg)"><input type="checkbox" id="ft-paid" ${t.paid?'checked':''}> Já foi pago ou recebido</label><div class="f"><label for="ft-pdate">Data do pagamento</label><input type="date" id="ft-pdate" value="${t.paidDate||''}"></div></div>
-    ${isNew?`<div class="row"><div class="f"><label for="ft-rep">Repetição</label><select id="ft-rep"><option value="">Não repete</option><option value="mensal">Fixa: repete todo mês</option><option value="parc">Parcelada</option></select></div><div class="f"><label for="ft-n">Quantas vezes (meses ou parcelas)</label><input type="number" id="ft-n" min="2" max="60" value="12"></div></div>`:t.grp?`<label class="tog" style="color:var(--fg)"><input type="checkbox" id="ft-next"> Aplicar as alterações também aos próximos ${t.tot?'parcelas':'meses'} desta série</label>`:''}
-    <div class="f"><label for="ft-notes">Observações</label><textarea id="ft-notes" rows="2">${esc(t.notes||'')}</textarea></div>
-    ${!isNew&&safeUrl(t.link)?`<a class="link" href="${esc(t.link)}" target="_blank" rel="noopener">${ic('link','sm')} Abrir comprovante</a>`:''}
-    <p class="err" role="alert"></p>
-    <div class="foot">${isNew?'':`<button type="button" class="btn danger" data-a="ftDel" data-id="${t.id}" style="margin-right:auto">${ic('trash')} Excluir</button>`}<button type="button" class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" type="submit">${isNew?'Lançar':'Salvar'}</button></div></form>`);
 }
 function finParcelModal(l){
   ensureFin();
@@ -2254,6 +2271,202 @@ function finJobBox(l){
 function finHomePanel(){
   const due=S.ftx.filter(t=>!t.paid&&t.date<=addDays(TODAY,3)).sort((x,y)=>x.date.localeCompare(y.date));
   return due.length?`<section class="panel"><h2>${ic('wallet')} Contas vencendo<button class="btn ghost sm" style="margin-left:auto" data-a="go" data-p="fin">Financeiro</button></h2>${due.slice(0,6).map(ftRow).join('')}${due.length>6?`<p class="muted" style="font-size:12.5px;margin:6px 0 0">+ ${due.length-6} no financeiro</p>`:''}</section>`:'';
+}
+
+function ftRow(t){
+  const late=ftLate(t),sitIcon=t.paid?'<span class="sit ok" title="Pago">'+ic('check','sm')+'</span>':late?'<span class="sit bad" title="Atrasado">!</span>':'<span class="sit" title="Pendente">'+ic('clock','sm')+'</span>';
+  if(t.kind==='tr'){const a=faccById(t.accountId),b=faccById(t.toAccountId);
+    return `<div class="ftr" data-a="ftEdit" data-id="${t.id}"><span class="ftd ${late?'late':''}">${fmtDate(t.date)}</span><span class="ftn"><b>${ic('repeat','sm')}<span style="overflow:hidden;text-overflow:ellipsis">${esc(t.desc||'Transferência')}</span></b><small>${esc(a?.name||'?')} → ${esc(b?.name||'?')}</small></span><span class="ftv tr">${fmtBRL(t.amount)}</span><button class="chipst ${t.paid?'ok':late?'bad':'mut'}" data-a="ftPay" data-id="${t.id}">${t.paid?'Feita':late?'Atrasada':'Agendada'}</button></div>`}
+  const c=fcatById(t.catId),acc=faccById(t.accountId),l=t.listId&&listById(t.listId),card=isCardTx(t);
+  const chip=card?`<span class="chipst inf" title="Compra no cartão">Fatura de ${MES[+invMonthOf(acc,t.date).slice(5)-1]}</span>`:`<button class="chipst ${t.paid?'ok':late?'bad':'mut'}" data-a="ftPay" data-id="${t.id}" title="${t.paid?'Marcar como pendente':'Marcar como '+(t.kind==='in'?'recebido':'pago')+' hoje'}">${t.paid?(t.kind==='in'?'Recebido':'Pago'):late?'Atrasado':'Pendente'}</button>`;
+  return `<div class="ftr" data-a="ftEdit" data-id="${t.id}"><span class="ftd ${late?'late':''}">${fmtDate(t.date)}</span><span class="ftn"><b>${card?ic('wallet','sm'):''}<span style="overflow:hidden;text-overflow:ellipsis">${esc(t.desc)}</span>${t.tot?`<small>${t.seq}/${t.tot}</small>`:t.grp?`<span title="Repete todo mês" style="display:inline-flex;color:var(--muted)">${ic('repeat','sm')}</span>`:''}</b><small>${c?`<span class="tagc" style="--c:${c.color}">${esc(c.name)}</span>`:''}${acc?esc(acc.name):''}${l?' · '+esc(l.name):''}${t.party?' · '+esc(t.party):''}</small></span><span class="ftv ${t.kind}">${t.kind==='out'?'−':'+'} ${fmtBRL(t.amount)}</span>${chip}</div>`;
+}
+const FIN_TABS=[['resumo','Resumo'],['tx','Transações'],['contas','Contas'],['cartoes','Cartões'],['pagar','A pagar e a receber'],['rel','Relatórios'],['proj','Lucro por projeto'],['config','Categorias e planejamento']];
+function finPage(){
+  ensureFin();
+  let tab=U.finTab||'resumo';if(tab==='lanc')tab='tx';if(!FIN_TABS.some(x=>x[0]===tab))tab='resumo';
+  const m=U.finMonth||TODAY.slice(0,7),[a,b]=monthRange(m),[y,mo]=m.split('-').map(Number);
+  const fn={resumo:finResumo,tx:finTx,contas:finAccounts,cartoes:finCards,pagar:finPagar,rel:finRel,proj:finProj,config:finConfig}[tab];
+  return topBar('Financeiro','Controle financeiro da empresa · só administradores veem',`<div class="res-tools fin-quick"><button class="btn" data-a="ftNew" data-k="in"><span class="qd in"></span>Receita</button><button class="btn" data-a="ftNew" data-k="out"><span class="qd out"></span>Despesa</button><button class="btn" data-a="ftNew" data-k="card">${ic('wallet','sm')} Despesa cartão</button><button class="btn" data-a="ftNew" data-k="tr">${ic('repeat','sm')} Transferência</button></div>`)
+    +`<div class="tabs">${FIN_TABS.map(([k,l])=>`<button class="tab ${tab===k?'on':''}" data-a="finTab" data-t="${k}">${l}</button>`).join('')}</div>`
+    +(['resumo','tx','contas','cartoes','rel'].includes(tab)?`<div class="month-bar"><button class="icon-btn" data-a="finMonth" data-d="-1" aria-label="Mês anterior">${ic('left')}</button><b>${MESL[mo-1]} ${y}</b><button class="icon-btn" data-a="finMonth" data-d="1" aria-label="Próximo mês">${ic('chev')}</button>${m!==TODAY.slice(0,7)?'<button class="btn sm" data-a="finMonth" data-d="0">Mês atual</button>':''}</div>`:'')
+    +`<div class="page scroll" data-keep="page" style="padding-top:12px">${fn(m,a,b)}</div>`;
+}
+function budgetPanel(m){
+  const [a,b]=monthRange(m),cats=S.fcat.filter(c=>c.kind==='out'&&+c.budget>0);
+  if(!cats.length)return `<section class="panel"><h2>Planejamento mensal</h2><div class="empty" style="padding:14px 8px"><b>Nenhum planejamento definido</b>Defina quanto a empresa pode gastar por categoria em cada mês.<br><button class="btn primary sm" style="margin-top:10px" data-a="finTab" data-t="config">Definir planejamento</button></div></section>`;
+  const rows=cats.map(c=>{const g=S.ftx.filter(t=>t.kind==='out'&&t.catId===c.id&&t.date>=a&&t.date<=b).reduce((s0,t)=>s0+(+t.amount||0),0);return {c,g,r:g/c.budget}}).sort((x,y)=>y.r-x.r);
+  const tg=rows.reduce((s0,x)=>s0+x.g,0),tb=cats.reduce((s0,c)=>s0+(+c.budget||0),0),col=r=>r>1?'var(--danger)':r>.8?'var(--warn)':'var(--ok)';
+  return `<section class="panel"><h2>Planejamento mensal<button class="btn ghost sm" style="margin-left:auto" data-a="finTab" data-t="config">Editar</button></h2>
+    <div class="bud tot"><span><b>Total planejado</b><small>${fmtBRL(tg)} de ${fmtBRL(tb)}</small></span><div class="meter"><i style="width:${Math.min(100,tg/tb*100)}%;background:${col(tg/tb)}"></i></div></div>
+    ${rows.map(({c,g,r})=>`<div class="bud"><span><b><i style="background:${c.color}"></i>${esc(c.name)}</b><small>${fmtBRL(g)} de ${fmtBRL(c.budget)} · ${r>1?`<em class="neg">passou ${fmtBRL(g-c.budget)}</em>`:`restam ${fmtBRL(c.budget-g)}`}</small></span><div class="meter"><i style="width:${Math.min(100,r*100)}%;background:${col(r)}"></i></div></div>`).join('')}</section>`;
+}
+function finResumo(m,a,b){
+  const inM=S.ftx.filter(t=>t.date>=a&&t.date<=b&&t.kind!=='tr');
+  const recR=ftSum(inM,'in',true),recP=ftSum(inM,'in'),desP=ftSum(inM,'out'),desR=ftSum(inM.filter(t=>t.paid||isCardTx(t)),'out');
+  const accs=bankAccs(),saldo=accs.reduce((s0,x)=>s0+accBalance(x),0),prev=accs.reduce((s0,x)=>s0+accForecast(x,b<TODAY?TODAY:b),0);
+  const cards=cardAccs(),invM=cards.map(c=>({c,iv:invoiceOf(c,m)})),invTot=invM.reduce((s0,x)=>s0+x.iv.total,0);
+  const lateIn=S.ftx.filter(t=>t.kind==='in'&&ftLate(t)),lateOut=S.ftx.filter(t=>t.kind!=='in'&&ftLate(t)),li=invLate();
+  const months=[];for(let i=5;i>=0;i--){const mm=addMonths(m+'-01',-i).slice(0,7),[x0,x1]=monthRange(mm),l=S.ftx.filter(t=>t.date>=x0&&t.date<=x1);months.push({mm,i:ftSum(l,'in'),o:ftSum(l,'out')})}
+  const mx=Math.max(1,...months.flatMap(x=>[x.i,x.o]));
+  const soon=S.ftx.filter(t=>!t.paid&&!isCardTx(t)&&t.date<=addDays(TODAY,7)).sort((x,y)=>x.date.localeCompare(y.date));
+  return `<div class="kpis">
+    <div class="kpi"><small>Saldo atual</small><b class="num ${saldo<0?'neg':''}" style="font-size:23px">${fmtBRL(saldo)}</b><span>Previsto no fim do mês: ${fmtBRL(prev)}</span></div>
+    <div class="kpi"><small>Receitas</small><b class="num pos" style="font-size:23px">${fmtBRL(recP)}</b><span>${fmtBRL(recR)} já recebido</span></div>
+    <div class="kpi"><small>Despesas</small><b class="num neg" style="font-size:23px">${fmtBRL(desP)}</b><span>${fmtBRL(desR)} pago ou no cartão</span></div>
+    <div class="kpi"><small>Cartão de crédito</small><b class="num" style="font-size:23px">${fmtBRL(invTot)}</b><span>${cards.length?`Faturas que vencem em ${MESNOME(m).toLowerCase()}`:'Nenhum cartão cadastrado'}</span></div>
+    <div class="kpi"><small>Balanço do mês</small><b class="num ${recP-desP<0?'neg':'pos'}" style="font-size:23px">${fmtBRL(recP-desP)}</b><span>${recP?'Margem de '+Math.round((recP-desP)/recP*100)+'%':'Sem receitas no mês'}</span></div>
+    <div class="kpi ${lateIn.length+lateOut.length+li.length?'bad':''}"><small>Atrasados</small><b>${lateIn.length+lateOut.length+li.length}</b><span>${fmtBRL(ftSum(lateIn,'in'))} a receber · ${fmtBRL(ftSum(lateOut,'out')+li.reduce((s0,x)=>s0+x.iv.open,0))} a pagar</span></div>
+  </div>
+  <div class="grid2">
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px">${donutPanel('in',a,b,'Receitas por categoria')}${donutPanel('out',a,b,'Despesas por categoria')}</div>
+      <section class="panel"><h2>Entradas e saídas <span class="count">últimos 6 meses</span></h2>
+        <div class="legend" style="margin-bottom:6px"><span><i style="background:var(--ok)"></i>Receitas</span><span><i style="background:var(--danger)"></i>Despesas</span></div>
+        <div class="fcols">${months.map(x=>`<div class="g" title="${MESNOME(x.mm)}: receitas ${fmtBRL(x.i)} · despesas ${fmtBRL(x.o)}"><i class="in" style="height:${x.i/mx*100}%"></i><i class="out" style="height:${x.o/mx*100}%"></i></div>`).join('')}</div>
+        <div class="fcols-x">${months.map(x=>`<span class="${x.mm===m?'cur':''}">${MES[+x.mm.slice(5)-1]}<br><small class="num">${fmtK(x.i-x.o)}</small></span>`).join('')}</div>
+        <p class="muted" style="font-size:12px;margin:8px 0 0">Embaixo de cada mês: balanço (receitas − despesas), contando pagos e pendentes.</p>
+      </section>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+      ${budgetPanel(m)}
+      <section class="panel"><h2>Contas<button class="btn ghost sm" style="margin-left:auto" data-a="finTab" data-t="contas">Ver contas</button></h2>${accs.map(x=>`<div class="acc"><i style="background:${x.color}"></i><span>${esc(x.name)}<small>${esc(accTypeName(x.type))}</small></span><b class="${accBalance(x)<0?'neg':''}">${fmtBRL(accBalance(x))}</b></div>`).join('')||'<p class="muted">Cadastre suas contas na aba Contas.</p>'}</section>
+      ${cards.length?`<section class="panel"><h2>Cartões de crédito<button class="btn ghost sm" style="margin-left:auto" data-a="finTab" data-t="cartoes">Ver faturas</button></h2>${invM.map(({c,iv})=>`<div class="acc"><i style="background:${c.color}"></i><span>${esc(c.name)}<small>Fatura de ${MESNOME(m).toLowerCase()} · vence ${fmtDate(iv.due)}</small></span><b>${fmtBRL(iv.total)}</b></div>`).join('')}</section>`:''}
+      <section class="panel"><h2>Atrasados e próximos 7 dias <span class="count">${soon.length+li.length}</span></h2>${li.map(({c,iv})=>`<div class="ftr" data-a="cardPay" data-id="${c.id}" data-ym="${iv.ym}"><span class="ftd late">${fmtDate(iv.due)}</span><span class="ftn"><b>${ic('wallet','sm')}Fatura ${esc(c.name)}</b><small>${MESNOME(iv.ym)}</small></span><span class="ftv out">− ${fmtBRL(iv.open)}</span><span class="chipst bad">Pagar fatura</span></div>`).join('')}${soon.slice(0,12).map(ftRow).join('')}${soon.length+li.length?'':'<p class="muted">Nada vencendo. Tudo em dia.</p>'}${soon.length>12?`<button class="btn ghost sm" data-a="finTab" data-t="pagar">Ver todos</button>`:''}</section>
+    </div>
+  </div>`;
+}
+function finTx(m,a,b){
+  const F=U.ff||{},q=(F.q||'').toLowerCase();
+  const list=S.ftx.filter(t=>t.date>=a&&t.date<=b&&(!F.k||t.kind===F.k)&&(!F.acc||t.accountId===F.acc||t.toAccountId===F.acc)&&(!F.cat||t.catId===F.cat)&&(!F.proj||t.listId===F.proj)&&(!F.st||(F.st==='pago'?t.paid:F.st==='atrasado'?ftLate(t):!t.paid&&!isCardTx(t)))&&(!q||((t.desc||'')+' '+(t.party||'')).toLowerCase().includes(q))).sort((x,y)=>y.date.localeCompare(x.date)||(y.kind==='tr')-(x.kind==='tr'));
+  const sel=(k,label,opts)=>`<select data-c="ff" data-k="${k}" aria-label="${label}"><option value="">${label}</option>${opts.map(([v,n])=>`<option value="${v}" ${F[k]===v?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
+  const fa=F.acc&&faccById(F.acc),scope=fa?(isCard(fa)?[]:[fa]):bankAccs();
+  const dayBal=d=>scope.reduce((s0,x)=>s0+(d<=TODAY?accBalAt(x,d):accForecast(x,d)),0);
+  let out='',day='';
+  list.forEach((t,i)=>{out+=ftRow(t);const nx=list[i+1];if(scope.length&&(!nx||nx.date!==t.date))out+=`<div class="daybal"><span>${t.date>TODAY?'Saldo previsto no fim do dia':'Saldo no fim do dia'} <b>${fmtBRL(dayBal(t.date))}</b></span></div>`});
+  const inT=ftSum(list,'in'),outT=ftSum(list,'out');
+  return `<div class="fin-filters"><input placeholder="Buscar descrição ou fornecedor…" value="${esc(F.q||'')}" data-i="ffq" data-fk="ffq" aria-label="Buscar">
+    ${sel('k','Todos os tipos',[['in','Receitas'],['out','Despesas'],['tr','Transferências']])}${sel('st','Todas as situações',[['pago','Pagos ou recebidos'],['pendente','Pendentes'],['atrasado','Atrasados']])}
+    ${sel('acc','Todas as contas',S.facc.map(x=>[x.id,x.name]))}${sel('cat','Todas as categorias',S.fcat.map(c=>[c.id,(c.kind==='in'?'Receita: ':'Despesa: ')+c.name]))}${sel('proj','Todos os projetos',S.lists.map(l=>[l.id,l.name]))}
+    ${Object.values(F).some(Boolean)?'<button class="btn ghost sm" data-a="ffClear">Limpar filtros</button>':''}</div>
+  <section class="panel">${out||'<div class="empty"><b>Nenhuma transação neste mês</b>Use os botões Receita, Despesa, Despesa cartão ou Transferência.</div>'}
+    ${list.length?`<div class="ftot"><span>Receitas <b class="pos">${fmtBRL(inT)}</b></span><span>Despesas <b class="neg">${fmtBRL(outT)}</b></span><span>Balanço <b class="${inT-outT<0?'neg':'pos'}">${fmtBRL(inT-outT)}</b></span></div>`:''}</section>
+  ${scope.length?`<p class="muted" style="font-size:12px">O saldo no fim do dia considera ${fa?'a conta '+esc(fa.name):'todas as contas (sem os cartões)'}: até hoje, o que já foi pago; nos dias futuros, também o que está pendente.</p>`:''}`;
+}
+function finAccounts(m,a,b){
+  const accs=bankAccs(),end=b<TODAY?TODAY:b;
+  return `<div class="kpis" style="max-width:640px"><div class="kpi"><small>Saldo atual</small><b class="num" style="font-size:23px">${fmtBRL(accs.reduce((s0,x)=>s0+accBalance(x),0))}</b></div><div class="kpi"><small>Saldo previsto em ${fmtLong(end)}</small><b class="num" style="font-size:23px">${fmtBRL(accs.reduce((s0,x)=>s0+accForecast(x,end),0))}</b></div></div>
+  <div class="accgrid"><button class="acard newc" data-a="accNew" data-type="banco"><span>${ic('plus')}</span>Nova conta</button>
+  ${accs.map(x=>{const bal=accBalance(x),pv=accForecast(x,end);return `<div class="acard"><div class="ah"><i style="background:${x.color}"></i><b>${esc(x.name)}</b><button class="icon-btn sm" data-a="accEdit" data-id="${x.id}" title="Editar conta" aria-label="Editar conta">${ic('gear')}</button></div><small class="muted">${esc(accTypeName(x.type))}</small>
+    <div class="ar"><span>Saldo atual</span><b class="${bal<0?'neg':'pos'}">${fmtBRL(bal)}</b></div><div class="ar"><span>Saldo previsto</span><b class="${pv<0?'neg':'pos'}">${fmtBRL(pv)}</b></div>
+    <div class="af"><button class="btn ghost sm" data-a="ftNew" data-k="out" data-acc="${x.id}">Despesa</button><button class="btn ghost sm" data-a="ftNew" data-k="in" data-acc="${x.id}">Receita</button><button class="btn ghost sm" data-a="ftNew" data-k="tr" data-acc="${x.id}">Transferir</button><button class="btn ghost sm" data-a="accTx" data-id="${x.id}">Extrato</button></div></div>`}).join('')}</div>
+  ${S.facc.some(x=>x.archived)?`<p class="muted" style="font-size:12.5px">Contas arquivadas: ${S.facc.filter(x=>x.archived).map(x=>`<button class="link" data-a="accEdit" data-id="${x.id}">${esc(x.name)}</button>`).join(', ')}</p>`:''}
+  <p class="muted" style="font-size:12.5px">Saldo previsto = saldo de hoje + o que está pendente até o fim do mês selecionado, incluindo faturas de cartão pagas por esta conta.</p>`;
+}
+function finCards(m){
+  const cards=cardAccs();
+  if(!cards.length)return `<div class="empty"><b>Nenhum cartão de crédito cadastrado</b>Cadastre o cartão da empresa para lançar compras, acompanhar as faturas e o limite.<br><button class="btn primary sm" style="margin-top:12px" data-a="accNew" data-type="cartao">${ic('plus')} Adicionar cartão</button></div>`;
+  return `<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn" data-a="accNew" data-type="cartao">${ic('plus')} Novo cartão</button></div>
+  <div class="grid3" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr))">${cards.map(c=>{
+    const iv=invoiceOf(c,m),opens=openInvoices(c),used=opens.reduce((s0,x)=>s0+x.open,0),lim=+c.limit||0,st=iv.total<=0.004?['mut','Sem compras']:iv.open<=0.004?['ok','Paga']:iv.due<TODAY?['bad','Atrasada']:['busy','Em aberto'];
+    return `<section class="panel"><div class="ah"><i style="background:${c.color}"></i><b style="font-size:16px">${esc(c.name)}</b><span class="muted" style="font-size:12px">fecha dia ${c.closeDay||25} · vence dia ${c.dueDay||5}</span><button class="icon-btn sm" style="margin-left:auto" data-a="accEdit" data-id="${c.id}" aria-label="Editar cartão">${ic('gear')}</button></div>
+      <div class="invh"><div><small>Fatura de ${MESNOME(m).toLowerCase()}</small><b class="num">${fmtBRL(iv.total)}</b><span class="chipst ${st[0]}">${st[1]}</span></div><div><small>Vencimento</small><b>${fmtLong(iv.due)}</b>${iv.paid?`<small>Pago: ${fmtBRL(iv.paid)}</small>`:''}</div>${lim?`<div><small>Limite disponível</small><b class="num">${fmtBRL(lim-used)}</b><small>de ${fmtBRL(lim)}</small></div>`:''}</div>
+      ${lim?`<div class="meter"><i style="width:${Math.min(100,used/lim*100)}%;background:${used/lim>.9?'var(--danger)':'var(--accent)'}"></i></div>`:''}
+      <div class="res-tools" style="margin:10px 0">${iv.open>0.004?`<button class="btn primary sm" data-a="cardPay" data-id="${c.id}" data-ym="${m}">Pagar fatura</button>`:''}<button class="btn sm" data-a="ftNew" data-k="card" data-acc="${c.id}">${ic('plus')} Despesa no cartão</button></div>
+      ${iv.items.map(ftRow).join('')||'<p class="muted" style="font-size:13px">Nenhuma compra nesta fatura.</p>'}
+      ${opens.filter(x=>x.ym!==m&&x.due<TODAY).map(x=>`<p class="neg" style="font-size:12.5px;margin:8px 0 0">Fatura de ${MESNOME(x.ym).toLowerCase()} atrasada: ${fmtBRL(x.open)} <button class="btn sm" data-a="cardPay" data-id="${c.id}" data-ym="${x.ym}">Pagar</button></p>`).join('')}
+    </section>`}).join('')}</div>`;
+}
+function finPagar(){
+  const pend=S.ftx.filter(t=>!t.paid&&!isCardTx(t)).sort((x,y)=>x.date.localeCompare(y.date));
+  const invRows=cardAccs().flatMap(c=>openInvoices(c).map(iv=>({c,iv}))).sort((x,y)=>x.iv.due.localeCompare(y.iv.due));
+  const invHTML=invRows.map(({c,iv})=>`<div class="ftr" data-a="cardPay" data-id="${c.id}" data-ym="${iv.ym}"><span class="ftd ${iv.due<TODAY?'late':''}">${fmtDate(iv.due)}</span><span class="ftn"><b>${ic('wallet','sm')}Fatura ${esc(c.name)}</b><small>${MESNOME(iv.ym)}</small></span><span class="ftv out">− ${fmtBRL(iv.open)}</span><span class="chipst ${iv.due<TODAY?'bad':'busy'}">Pagar fatura</span></div>`).join('');
+  const col=(kind,title)=>{const l=pend.filter(t=>kind==='in'?t.kind==='in':t.kind!=='in'),late=l.filter(ftLate),soon=l.filter(t=>!ftLate(t)&&t.date<=addDays(TODAY,30)),later=l.filter(t=>t.date>addDays(TODAY,30));
+    const sum=arr=>arr.reduce((s0,t)=>s0+(+t.amount||0),0),g=(t0,arr,bad)=>arr.length?`<div class="grp-l ${bad?'bad':''}">${t0} <span class="count">${arr.length} · ${fmtBRL(sum(arr))}</span></div>${arr.map(ftRow).join('')}`:'';
+    return `<section class="panel"><h2>${title} <span class="count">${fmtBRL(sum(l)+(kind==='out'?invRows.reduce((s0,x)=>s0+x.iv.open,0):0))}</span></h2>${kind==='out'&&invHTML?`<div class="grp-l">Faturas de cartão</div>${invHTML}`:''}${g('Atrasados',late,1)}${g('Próximos 30 dias',soon)}${g('Mais adiante',later.slice(0,30))}${l.length||(kind==='out'&&invHTML)?'':'<p class="muted">Nada pendente.</p>'}</section>`};
+  return `<div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))">${col('in','A receber')}${col('out','A pagar')}</div><p class="muted" style="font-size:12.5px">Clique em “Pendente” ou “Atrasado” para marcar como pago ou recebido hoje.</p>`;
+}
+function finRel(m,a,b){
+  const k=U.rk||'out',v=U.rv||'rosca',flow=k==='flow';
+  const seg=[['rosca','Rosca','pie'],['linha','Evolução','gantt'],['barras','Barras','load']].map(([x,l,i])=>`<button class="${v===x?'on':''}" data-a="relView" data-v="${x}" title="${l}">${ic(i)}<span>${l}</span></button>`).join('');
+  const kindSel=`<select data-c="rk" aria-label="Relatório"><option value="out" ${k==='out'?'selected':''}>Despesas por categoria</option><option value="in" ${k==='in'?'selected':''}>Receitas por categoria</option><option value="flow" ${k==='flow'?'selected':''}>Receitas x despesas</option></select>`;
+  let body='';
+  const items=flow?[]:catTotals(k,a,b),total=items.reduce((s0,x)=>s0+x.v,0);
+  if(v==='rosca'&&!flow){
+    body=total?`<div class="rel-rosca">${donut(items,'Total',true)}<div class="rel-list"><h3>${k==='out'?'Despesas':'Receitas'} por categoria</h3>${items.map(x=>`<div class="rl"><i style="background:${x.color}"></i><span><b>${esc(x.name)}</b><small>${Math.round(x.v/total*1000)/10}%</small></span><em class="${k==='out'?'neg':'pos'}">${fmtBRL(x.v)}</em></div>`).join('')}</div></div>`:'<div class="empty"><b>Nada neste mês</b>Não há lançamentos para este relatório.</div>';
+  }else if(v==='barras'||(v==='rosca'&&flow)){
+    if(flow){const months=[];for(let i=11;i>=0;i--){const mm=addMonths(m+'-01',-i).slice(0,7),[x0,x1]=monthRange(mm),l=S.ftx.filter(t=>t.date>=x0&&t.date<=x1);months.push({mm,i:ftSum(l,'in'),o:ftSum(l,'out')})}const mx=Math.max(1,...months.flatMap(x=>[x.i,x.o]));
+      body=`<div class="legend" style="margin-bottom:6px"><span><i style="background:var(--ok)"></i>Receitas</span><span><i style="background:var(--danger)"></i>Despesas</span></div><div class="fcols" style="height:240px">${months.map(x=>`<div class="g" title="${MESNOME(x.mm)}: ${fmtBRL(x.i)} / ${fmtBRL(x.o)}"><i class="in" style="height:${x.i/mx*100}%"></i><i class="out" style="height:${x.o/mx*100}%"></i></div>`).join('')}</div><div class="fcols-x">${months.map(x=>`<span class="${x.mm===m?'cur':''}">${MES[+x.mm.slice(5)-1]}<br><small class="num">${fmtK(x.i-x.o)}</small></span>`).join('')}</div>`}
+    else{const mx=Math.max(1,...items.map(x=>x.v));body=items.map(x=>`<div class="hbar" style="grid-template-columns:minmax(0,220px) minmax(0,1fr) 120px"><span class="lb"><i style="width:9px;height:9px;border-radius:2px;background:${x.color};display:inline-block"></i>${esc(x.name)}</span><span class="tr"><i style="width:${x.v/mx*100}%;background:${x.color}"></i></span><span class="v" style="width:auto">${fmtBRL(x.v)}</span></div>`).join('')||'<div class="empty"><b>Nada neste mês</b></div>'}
+  }else{
+    const months=[];for(let i=11;i>=0;i--){const mm=addMonths(m+'-01',-i).slice(0,7),[x0,x1]=monthRange(mm),l=S.ftx.filter(t=>t.date>=x0&&t.date<=x1);months.push({mm,i:ftSum(l,'in'),o:ftSum(l,'out')})}
+    const series=flow?[['i','var(--ok)','Receitas'],['o','var(--danger)','Despesas']]:[[k==='in'?'i':'o',k==='in'?'var(--ok)':'var(--danger)',k==='in'?'Receitas':'Despesas']];
+    const mx=Math.max(1,...months.flatMap(x=>series.map(s0=>x[s0[0]]))),W=640,H=240,P=44,X=i=>P+i*(W-P-16)/11,Y=val=>H-28-(val/mx)*(H-48);
+    body=`<div class="legend" style="margin-bottom:6px">${series.map(s0=>`<span><i style="background:${s0[1]}"></i>${s0[2]}</span>`).join('')}</div><div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" class="lchart" role="img" aria-label="Evolução nos últimos 12 meses">
+      ${[0,.5,1].map(f=>`<line x1="${P}" x2="${W-10}" y1="${Y(mx*f)}" y2="${Y(mx*f)}" stroke="var(--line)" stroke-dasharray="3 3"/><text x="${P-6}" y="${Y(mx*f)+4}" text-anchor="end">${fmtK(mx*f)}</text>`).join('')}
+      ${series.map(s0=>`<polyline fill="none" stroke="${s0[1]}" stroke-width="2.5" points="${months.map((x,i)=>X(i)+','+Y(x[s0[0]])).join(' ')}"/>${months.map((x,i)=>`<circle cx="${X(i)}" cy="${Y(x[s0[0]])}" r="${x.mm===m?5:3}" fill="${s0[1]}"><title>${MESNOME(x.mm)}: ${fmtBRL(x[s0[0]])}</title></circle>`).join('')}`).join('')}
+      ${months.map((x,i)=>`<text x="${X(i)}" y="${H-8}" text-anchor="middle" class="${x.mm===m?'cur':''}">${MES[+x.mm.slice(5)-1]}</text>`).join('')}
+    </svg></div><p class="muted" style="font-size:12px">Últimos 12 meses até ${MESNOME(m).toLowerCase()}, contando pagos e pendentes.</p>`;
+  }
+  return `<div class="rel-tools"><div class="seg">${seg}</div>${kindSel}</div><section class="panel">${body}</section>`;
+}
+function finConfig(){
+  const catRows=k=>S.fcat.filter(c=>c.kind===k).map(c=>`<div class="strow"><input type="color" value="${c.color}" data-c="fcatF" data-f="color" data-id="${c.id}" aria-label="Cor"><input type="text" value="${esc(c.name)}" data-c="fcatF" data-f="name" data-id="${c.id}" aria-label="Nome da categoria">${k==='out'?`<label class="muted" style="font-size:12.5px;display:flex;gap:6px;align-items:center">Limite mensal R$ <input type="number" min="0" step="50" placeholder="sem limite" value="${+c.budget||''}" style="width:120px" data-c="fcatF" data-f="budget" data-id="${c.id}"></label>`:''}<span class="count">${S.ftx.filter(t=>t.catId===c.id).length} lanç.</span><button class="icon-btn sm" data-a="fcatDel" data-id="${c.id}" aria-label="Excluir categoria">${ic('trash')}</button></div>`).join('');
+  return `<section class="panel set-sec"><h2>Categorias de despesa e planejamento</h2><p>O limite mensal é o planejamento: quanto a empresa pode gastar na categoria por mês. Deixe em branco para não acompanhar.</p>${catRows('out')}<button class="btn ghost sm" data-a="fcatAdd" data-k="out">${ic('plus')} Nova categoria</button></section>
+  <section class="panel set-sec"><h2>Categorias de receita</h2>${catRows('in')}<button class="btn ghost sm" data-a="fcatAdd" data-k="in">${ic('plus')} Nova categoria</button></section>
+  <p class="muted" style="font-size:12.5px">Contas e cartões são cadastrados nas abas Contas e Cartões.</p>`;
+}
+function ftCatOptions(kind,sel){return S.fcat.filter(c=>c.kind===kind).map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.name)}</option>`).join('')}
+function ftModal(t,kind,pre){
+  ensureFin();
+  const isNew=!t,card=kind==='card'||(t&&isCardTx(t));
+  if(card&&!cardAccs().length&&!(t&&isCardTx(t))){openModal(`<div class="md"><h2>Nenhum cartão cadastrado</h2><p>Cadastre o cartão de crédito da empresa para lançar compras nele.</p><div class="foot"><button class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" data-a="accNew" data-type="cartao">Adicionar cartão</button></div></div>`);return}
+  const accList=card?cardAccs():bankAccs();
+  t=t||{kind:card?'out':(kind||'out'),desc:'',amount:'',date:TODAY,paid:false,paidDate:'',accountId:accList[0]?.id||'',catId:'',listId:'',party:'',notes:'',link:'',...(pre||{})};
+  if(isNew&&pre&&pre.accountId&&!accList.some(a=>a.id===pre.accountId))t.accountId=accList[0]?.id||'';
+  const k=t.kind,acc=faccById(t.accountId),accOpts=[...accList,...(acc&&!accList.includes(acc)?[acc]:[])];
+  openModal(`<form class="md wide" data-form="ft" data-id="${isNew?'':t.id}" data-mode="${card?'card':''}" aria-label="Lançamento"><h2>${isNew?(card?'Nova despesa no cartão':k==='in'?'Nova receita':'Nova despesa'):card?'Compra no cartão':'Editar lançamento'}</h2>
+    ${card?'<input type="hidden" name="ft-kind" value="out" checked>':`<div class="roles"><label><input type="radio" name="ft-kind" value="in" ${k==='in'?'checked':''} data-c="ftKind"><span><b>Receita</b><small>Dinheiro que entra</small></span></label><label><input type="radio" name="ft-kind" value="out" ${k==='out'?'checked':''} data-c="ftKind"><span><b>Despesa</b><small>Dinheiro que sai</small></span></label></div>`}
+    <div class="row"><div class="f"><label for="ft-desc">Descrição</label><input id="ft-desc" required value="${esc(t.desc)}" placeholder="${card?'Ex.: Assinatura Adobe':'Ex.: Aluguel do estúdio'}" ${isNew?'autofocus':''}></div><div class="f"><label for="ft-amount">Valor (R$)${isNew?' – total, se for parcelado':''}</label><input type="number" id="ft-amount" required min="0.01" step="0.01" value="${t.amount}"></div></div>
+    <div class="row"><div class="f"><label for="ft-date">${card?'Data da compra':'Data de vencimento'}</label><input type="date" id="ft-date" required value="${t.date}"></div><div class="f"><label for="ft-acc">${card?'Cartão':'Conta'}</label><select id="ft-acc">${accOpts.map(a=>`<option value="${a.id}" ${a.id===t.accountId?'selected':''}>${esc(a.name)}</option>`).join('')}</select></div></div>
+    <div class="row"><div class="f"><label for="ft-cat">Categoria</label><select id="ft-cat">${ftCatOptions(k,t.catId)}</select></div><div class="f"><label for="ft-proj">Projeto (opcional)</label><select id="ft-proj"><option value="">Nenhum</option>${S.lists.map(l=>`<option value="${l.id}" ${l.id===t.listId?'selected':''}>${esc(l.name)}</option>`).join('')}</select></div></div>
+    <div class="row"><div class="f"><label for="ft-party">${k==='in'?'Cliente':'Fornecedor'} (opcional)</label><input id="ft-party" value="${esc(t.party||'')}"></div><div class="f"><label for="ft-link">Link do comprovante ou nota (opcional)</label><input type="url" id="ft-link" value="${esc(t.link||'')}" placeholder="https://"></div></div>
+    ${card?'<p class="muted" style="font-size:12.5px;margin:0">A compra entra na fatura do cartão conforme o dia de fechamento. O dinheiro sai da conta só quando a fatura for paga.</p>':`<div class="row"><label class="tog" style="color:var(--fg)"><input type="checkbox" id="ft-paid" ${t.paid?'checked':''}> Já foi pago ou recebido</label><div class="f"><label for="ft-pdate">Data do pagamento</label><input type="date" id="ft-pdate" value="${t.paidDate||''}"></div></div>`}
+    ${isNew?`<div class="row"><div class="f"><label for="ft-rep">Repetição</label><select id="ft-rep"><option value="">Não repete</option><option value="mensal">Fixa: repete todo mês</option><option value="parc">Parcelada</option></select></div><div class="f"><label for="ft-n">Quantas vezes (meses ou parcelas)</label><input type="number" id="ft-n" min="2" max="60" value="12"></div></div>`:t.grp?`<label class="tog" style="color:var(--fg)"><input type="checkbox" id="ft-next"> Aplicar as alterações também aos próximos ${t.tot?'parcelas':'meses'} desta série</label>`:''}
+    <div class="f"><label for="ft-notes">Observações</label><textarea id="ft-notes" rows="2">${esc(t.notes||'')}</textarea></div>
+    ${!isNew&&safeUrl(t.link)?`<a class="link" href="${esc(t.link)}" target="_blank" rel="noopener">${ic('link','sm')} Abrir comprovante</a>`:''}
+    <p class="err" role="alert"></p>
+    <div class="foot">${isNew?'':`<button type="button" class="btn danger" data-a="ftDel" data-id="${t.id}" style="margin-right:auto">${ic('trash')} Excluir</button>`}<button type="button" class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" type="submit">${isNew?'Lançar':'Salvar'}</button></div></form>`);
+}
+function trModal(t,pre){
+  ensureFin();
+  const isNew=!t,banks=bankAccs(),dests=[...bankAccs(),...cardAccs()];
+  if(banks.length<1||dests.length<2){openModal(`<div class="md"><h2>Cadastre mais uma conta</h2><p>Para transferir, a empresa precisa ter pelo menos duas contas cadastradas.</p><div class="foot"><button class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" data-a="accNew" data-type="banco">Nova conta</button></div></div>`);return}
+  t=t||{kind:'tr',desc:'Transferência',amount:'',date:TODAY,paid:true,accountId:banks[0].id,toAccountId:dests.find(x=>x.id!==banks[0].id)?.id,...(pre||{})};
+  if(isNew&&pre&&pre.accountId&&!pre.toAccountId)t.toAccountId=dests.find(x=>x.id!==pre.accountId)?.id;
+  openModal(`<form class="md" data-form="tr" data-id="${isNew?'':t.id}" data-invoice="${esc(t.invoice||'')}" aria-label="Transferência"><h2>${isNew?(t.invoice?'Pagar fatura':'Nova transferência'):'Editar transferência'}</h2>
+    <div class="row"><div class="f"><label for="tr-from">Sai da conta</label><select id="tr-from">${banks.map(a=>`<option value="${a.id}" ${a.id===t.accountId?'selected':''}>${esc(a.name)}</option>`).join('')}</select></div><div class="f"><label for="tr-to">Entra na conta</label><select id="tr-to">${dests.map(a=>`<option value="${a.id}" ${a.id===t.toAccountId?'selected':''}>${esc(a.name)}${isCard(a)?' (cartão)':''}</option>`).join('')}</select></div></div>
+    <div class="row"><div class="f"><label for="tr-amount">Valor (R$)</label><input type="number" id="tr-amount" required min="0.01" step="0.01" value="${t.amount}" ${isNew?'autofocus':''}></div><div class="f"><label for="tr-date">Data</label><input type="date" id="tr-date" required value="${t.date}"></div></div>
+    <div class="f"><label for="tr-desc">Descrição</label><input id="tr-desc" value="${esc(t.desc||'')}"></div>
+    <label class="tog" style="color:var(--fg)"><input type="checkbox" id="tr-paid" ${t.paid?'checked':''}> Transferência já feita (desmarque para agendar)</label>
+    <p class="muted" style="font-size:12.5px;margin:0">Transferência não conta como receita nem despesa: só move dinheiro entre as contas.</p>
+    <p class="err" role="alert"></p>
+    <div class="foot">${isNew?'':`<button type="button" class="btn danger" data-a="ftDel" data-id="${t.id}" style="margin-right:auto">${ic('trash')} Excluir</button>`}<button type="button" class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" type="submit">${isNew?(t.invoice?'Pagar fatura':'Transferir'):'Salvar'}</button></div></form>`);
+}
+function accModal(a,type){
+  const isNew=!a;a=a||{name:'',type:type||'banco',color:MCOLORS[S.facc.length%MCOLORS.length],initial:0,limit:'',closeDay:25,dueDay:5,payFrom:bankAccs()[0]?.id||''};
+  const card=a.type==='cartao';
+  openModal(`<form class="md" data-form="acc" data-id="${isNew?'':a.id}" aria-label="Conta"><h2>${isNew?(card?'Novo cartão de crédito':'Nova conta'):esc(a.name)}</h2>
+    <div class="row"><div class="f"><label for="ac-name">Nome</label><input id="ac-name" required value="${esc(a.name)}" placeholder="${card?'Ex.: Cartão Inter PJ':'Ex.: Inter Produções'}" ${isNew?'autofocus':''}></div><div class="f"><label for="ac-type">Tipo</label><select id="ac-type" data-c="accType">${ACC_TYPES.map(([k,n])=>`<option value="${k}" ${a.type===k?'selected':''}>${n}</option>`).join('')}</select></div></div>
+    <div class="row"><div class="f" id="ac-initf" ${card?'hidden':''}><label for="ac-init">Saldo inicial (R$)</label><input type="number" id="ac-init" step="0.01" value="${a.initial||0}"></div><div class="f"><label for="ac-color">Cor</label><input type="color" id="ac-color" value="${a.color}"></div></div>
+    <div id="ac-card" ${card?'':'hidden'} style="display:flex;flex-direction:column;gap:12px">
+      <div class="row"><div class="f"><label for="ac-limit">Limite (R$)</label><input type="number" id="ac-limit" min="0" step="100" value="${a.limit||''}"></div><div class="f"><label for="ac-pay">Fatura paga pela conta</label><select id="ac-pay">${bankAccs().map(x=>`<option value="${x.id}" ${x.id===a.payFrom?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div></div>
+      <div class="row"><div class="f"><label for="ac-close">Dia do fechamento</label><input type="number" id="ac-close" min="1" max="31" value="${a.closeDay||25}"></div><div class="f"><label for="ac-due">Dia do vencimento</label><input type="number" id="ac-due" min="1" max="31" value="${a.dueDay||5}"></div></div>
+    </div>
+    ${isNew?'':`<label class="tog" style="color:var(--fg)"><input type="checkbox" id="ac-arch" ${a.archived?'checked':''}> Arquivar (some das listas, mas mantém o histórico)</label>`}
+    <p class="muted" style="font-size:12.5px;margin:0" ${card?'hidden':''} id="ac-help">Saldo inicial é quanto havia na conta quando vocês começaram a usar o sistema.</p>
+    <p class="err" role="alert"></p>
+    <div class="foot">${isNew?'':`<button type="button" class="btn danger" data-a="accDel" data-id="${a.id}" style="margin-right:auto">${ic('trash')} Excluir</button>`}<button type="button" class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" type="submit">${isNew?'Criar':'Salvar'}</button></div></form>`);
 }
 function jobModal(l,spaceId,pre){
   const isNew=!l,ro=!can('gerenciar_estrutura');
@@ -2385,9 +2598,16 @@ const A={
   finTab:el=>{U.finTab=el.dataset.t;render()},
   finMonth:el=>{const d=+el.dataset.d,cur=U.finMonth||TODAY.slice(0,7);U.finMonth=d?addMonths(cur+'-01',d).slice(0,7):TODAY.slice(0,7);render()},
   ffClear:()=>{U.ff={};render()},
-  ftNew:el=>ftModal(null,el.dataset.k),
-  ftEdit:el=>{const t=S.ftx.find(x=>x.id===el.dataset.id);if(t)ftModal(t)},
-  ftPay:el=>{const t=S.ftx.find(x=>x.id===el.dataset.id);if(!t)return;t.paid=!t.paid;t.paidDate=t.paid?TODAY:'';toast(t.paid?(t.kind==='in'?'Marcado como recebido':'Marcado como pago'):'Voltou para pendente');render()},
+  ftNew:el=>{const k=el.dataset.k,pre=el.dataset.acc?{accountId:el.dataset.acc}:null;closeModal();if(k==='tr')trModal(null,pre);else ftModal(null,k,pre)},
+  accNew:el=>{closeModal();accModal(null,el.dataset.type)},
+  accEdit:el=>accModal(faccById(el.dataset.id)),
+  accDel:el=>{const a=faccById(el.dataset.id);if(S.ftx.some(t=>t.accountId===a.id||t.toAccountId===a.id)){toast('Esta conta tem lançamentos. Para tirá-la das listas, marque “Arquivar”.');return}confirmBox('Excluir conta?',`“${a.name}” será excluída.`,()=>{S.facc=S.facc.filter(x=>x!==a)})},
+  accTx:el=>{U.ff={acc:el.dataset.id};U.finTab='tx';render()},
+  cardPay:el=>{const c=faccById(el.dataset.id),ym=el.dataset.ym,iv=invoiceOf(c,ym);trModal(null,{accountId:payAccOf(c),toAccountId:c.id,invoice:ym,amount:iv.open,date:iv.due<TODAY?TODAY:iv.due,desc:`Pagamento da fatura ${c.name} (${MESNOME(ym).toLowerCase()})`,paid:true})},
+  relView:el=>{U.rv=el.dataset.v;render()},
+  relOpen:el=>{U.finTab='rel';U.rk=el.dataset.k;U.rv='rosca';render()},
+  ftEdit:el=>{const t=S.ftx.find(x=>x.id===el.dataset.id);if(t)(t.kind==='tr'?trModal(t):ftModal(t))},
+  ftPay:el=>{const t=S.ftx.find(x=>x.id===el.dataset.id);if(!t||isCardTx(t))return;t.paid=!t.paid;t.paidDate=t.paid?TODAY:'';toast(t.paid?(t.kind==='in'?'Marcado como recebido':'Marcado como pago'):'Voltou para pendente');render()},
   ftDel:el=>{const t=S.ftx.find(x=>x.id===el.dataset.id);openModal(`<div class="md" role="dialog" aria-label="Excluir lançamento"><h2>Excluir lançamento?</h2><p>“${esc(t.desc)}”, ${fmtBRL(t.amount)}, em ${fmtLong(t.date)}.</p><div class="foot"><button class="btn" data-a="closeModal">Cancelar</button>${t.grp?`<button class="btn danger" data-a="ftDelOne" data-id="${t.id}" data-next="1">Este e os próximos</button>`:''}<button class="btn primary" style="background:var(--danger);border-color:var(--danger);color:#fff" data-a="ftDelOne" data-id="${t.id}">${t.grp?'Só este':'Excluir'}</button></div></div>`)},
   ftDelOne:el=>{const t=S.ftx.find(x=>x.id===el.dataset.id);if(!t)return;const n0=S.ftx.length;S.ftx=S.ftx.filter(x=>el.dataset.next?!(x.grp===t.grp&&x.date>=t.date):x!==t);closeModal();toast(`${n0-S.ftx.length} lançamento${n0-S.ftx.length>1?'s':''} excluído${n0-S.ftx.length>1?'s':''}`);render()},
   faccAdd:()=>{S.facc.push({id:uid(),name:'Nova conta',type:'banco',color:MCOLORS[S.facc.length%MCOLORS.length],initial:0});render()},
@@ -2505,10 +2725,12 @@ function importJSON(txt){
 
 /* ============ alterações de campos ============ */
 const C={
+  accType:el=>{const f=el.closest('form'),card=el.value==='cartao';f.querySelector('#ac-card').hidden=!card;f.querySelector('#ac-initf').hidden=card;f.querySelector('#ac-help').hidden=card},
+  rk:el=>{U.rk=el.value;render()},
   ff:el=>{U.ff={...(U.ff||{}),[el.dataset.k]:el.value};render()},
   ftKind:el=>{const f=el.closest('form');f.querySelector('#ft-cat').innerHTML=ftCatOptions(el.value,'');const lb=f.querySelector('label[for=ft-party]');if(lb)lb.textContent=(el.value==='in'?'Cliente':'Fornecedor')+' (opcional)'},
   faccF:el=>{const a=faccById(el.dataset.id),f=el.dataset.f;let v=el.value;if(f==='initial')v=round2(+v||0);if(f==='name'&&!v.trim()){render();return}a[f]=v;render()},
-  fcatF:el=>{const c=fcatById(el.dataset.id),f=el.dataset.f;if(f==='name'&&!el.value.trim()){render();return}c[f]=el.value;render()},
+  fcatF:el=>{const c=fcatById(el.dataset.id),f=el.dataset.f;if(f==='name'&&!el.value.trim()){render();return}c[f]=f==='budget'?round2(+el.value||0):el.value;render()},
   resAdd:el=>{const f=el.closest('form'),kind=el.dataset.kind,id=el.value;if(!id)return;f.querySelector(`[data-res="${kind}"] .res-list`).insertAdjacentHTML('beforeend',resChip(kind,id));resSync(f,kind)},
   pendTog:el=>{const m=S.meetings.find(x=>x.id===el.dataset.m),x=m&&(m.pend||[]).find(y=>y.id===el.dataset.p);if(!x)return;x.done=el.checked;if(x.done)toast('Pendência concluída');render()},
   jbRefresh:el=>refreshJob(el.closest('form')),
@@ -2561,20 +2783,31 @@ const E={
   blur:el=>el.blur(),
 };
 const F={
+  tr:f=>{const v=id=>f.querySelector('#'+id)?.value??'',id=f.dataset.id,err=f.querySelector('.err'),from=v('tr-from'),to=v('tr-to'),amount=round2(+v('tr-amount')||0),date=v('tr-date');
+    if(from===to){err.textContent='Escolha contas diferentes.';return}if(amount<=0){err.textContent='Informe um valor maior que zero.';return}
+    const paid=f.querySelector('#tr-paid').checked,data={kind:'tr',accountId:from,toAccountId:to,amount,date,paid,paidDate:paid?date:'',desc:v('tr-desc').trim()||'Transferência',invoice:f.dataset.invoice||undefined};
+    if(id)Object.assign(S.ftx.find(x=>x.id===id),data);else S.ftx.push({id:uid(),catId:'',listId:'',party:'',notes:'',link:'',...data});
+    closeModal();toast(data.invoice?'Fatura paga':id?'Transferência atualizada':'Transferência registrada');render()},
+  acc:f=>{const v=id=>f.querySelector('#'+id)?.value??'',id=f.dataset.id,err=f.querySelector('.err'),name=v('ac-name').trim(),type=v('ac-type');
+    if(!name){err.textContent='Dê um nome.';return}
+    const data={name,type,color:v('ac-color'),initial:type==='cartao'?0:round2(+v('ac-init')||0),archived:!!f.querySelector('#ac-arch')?.checked};
+    if(type==='cartao')Object.assign(data,{limit:round2(+v('ac-limit')||0),closeDay:Math.min(31,Math.max(1,+v('ac-close')||25)),dueDay:Math.min(31,Math.max(1,+v('ac-due')||5)),payFrom:v('ac-pay')});
+    if(id)Object.assign(faccById(id),data);else S.facc.push({id:uid(),...data});
+    closeModal();toast(id?'Salvo':type==='cartao'?'Cartão cadastrado':'Conta criada');if(U.page!=='fin')U.page='fin';U.finTab=type==='cartao'?'cartoes':'contas';render()},
   ft:f=>{const v=id=>f.querySelector('#'+id)?.value??'',id=f.dataset.id,err=f.querySelector('.err');
-    const kind=f.querySelector('input[name=ft-kind]:checked').value,desc=v('ft-desc').trim(),amount=round2(+v('ft-amount')||0),date=v('ft-date');
+    const kind=(f.querySelector('input[name=ft-kind]:checked')||f.querySelector('input[name=ft-kind]')).value,desc=v('ft-desc').trim(),amount=round2(+v('ft-amount')||0),date=v('ft-date');
     if(!desc){err.textContent='Escreva uma descrição.';return}if(amount<=0){err.textContent='Informe um valor maior que zero.';return}if(!date){err.textContent='Informe a data.';return}
-    const paid=f.querySelector('#ft-paid').checked;
-    const data={kind,desc,amount,date,paid,paidDate:paid?(v('ft-pdate')||TODAY):'',accountId:v('ft-acc'),catId:v('ft-cat'),listId:v('ft-proj'),party:v('ft-party').trim(),link:v('ft-link').trim(),notes:v('ft-notes')};
+    const card=f.dataset.mode==='card',paid=card||!!f.querySelector('#ft-paid')?.checked;
+    const data={kind,desc,amount,date,paid,paidDate:card?date:(paid?(v('ft-pdate')||TODAY):''),accountId:v('ft-acc'),catId:v('ft-cat'),listId:v('ft-proj'),party:v('ft-party').trim(),link:v('ft-link').trim(),notes:v('ft-notes')};
     if(id){const t=S.ftx.find(x=>x.id===id);Object.assign(t,data);
       if(f.querySelector('#ft-next')?.checked)S.ftx.filter(x=>x.grp===t.grp&&x!==t&&x.date>t.date).forEach(x=>Object.assign(x,{kind,amount,accountId:data.accountId,catId:data.catId,listId:data.listId,party:data.party,...(t.tot?{}:{desc})}));
       closeModal();toast('Lançamento atualizado');render();return}
     const rep=v('ft-rep'),n=Math.max(2,Math.min(60,+v('ft-n')||2));
     if(!rep){S.ftx.push({id:uid(),...data})}
     else{const grp=uid();
-      if(rep==='parc'){const each=Math.floor(amount/n*100)/100;for(let i=0;i<n;i++)S.ftx.push({id:uid(),...data,amount:i===n-1?round2(amount-each*(n-1)):each,date:addMonths(date,i),paid:i===0&&paid,paidDate:i===0&&paid?data.paidDate:'',grp,seq:i+1,tot:n})}
-      else for(let i=0;i<n;i++)S.ftx.push({id:uid(),...data,date:addMonths(date,i),paid:i===0&&paid,paidDate:i===0&&paid?data.paidDate:'',grp})}
-    closeModal();toast(rep?`${n} lançamentos criados`:(kind==='in'?'Receita lançada':'Despesa lançada'));if(U.page!=='fin'){U.page='fin';U.finTab='lanc'}U.finMonth=date.slice(0,7);render()},
+      if(rep==='parc'){const each=Math.floor(amount/n*100)/100;for(let i=0;i<n;i++)S.ftx.push({id:uid(),...data,amount:i===n-1?round2(amount-each*(n-1)):each,date:addMonths(date,i),paid:card||(i===0&&paid),paidDate:card?addMonths(date,i):(i===0&&paid?data.paidDate:''),grp,seq:i+1,tot:n})}
+      else for(let i=0;i<n;i++)S.ftx.push({id:uid(),...data,date:addMonths(date,i),paid:card||(i===0&&paid),paidDate:card?addMonths(date,i):(i===0&&paid?data.paidDate:''),grp})}
+    closeModal();toast(rep?`${n} lançamentos criados`:(kind==='in'?'Receita lançada':'Despesa lançada'));if(U.page!=='fin'){U.page='fin';U.finTab='tx'}U.finMonth=date.slice(0,7);render()},
   finParcels:f=>{const v=id=>f.querySelector('#'+id)?.value??'',l=listById(f.dataset.id),err=f.querySelector('.err');
     const total=round2(+v('fp-total')||0),pct=Math.max(0,Math.min(100,+v('fp-pct')||0)),n=Math.max(1,Math.min(24,+v('fp-n')||1));
     if(total<=0){err.textContent='Informe o valor total.';return}
