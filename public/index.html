@@ -1512,7 +1512,7 @@ function badges(t){
   if(S.timer?.taskId===t.id)out.push(`<span class="meta" style="color:var(--danger)" title="Cronômetro rodando">${ic('clock','sm')}</span>`);
   return out.join('');
 }
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2600)}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,Math.max(2600,String(msg).length*55))}
 const logoSVG='<svg viewBox="0 0 24 24"><path d="M4 19V5l8 9 8-9v14"/></svg>';
 
 /* ============ mutações ============ */
@@ -2024,6 +2024,7 @@ const TR_COLORS={green:'#22A06B',yellow:'#D69E2E',orange:'#DD6B20',red:'#E5533A'
 const trColor=c=>TR_COLORS[String(c||'').split('_')[0]]||'#8A94A0';
 const trDay=x=>{const d=new Date(x);return isNaN(d)?'':iso(d)};
 function parseTrello(j){
+  if(j&&!Array.isArray(j.cards)&&Array.isArray(j.boards)&&(j.username||j.fullName))throw new Error('Este é o arquivo da sua conta do Trello, não de um quadro. Ele só tem a lista dos quadros ('+j.boards.filter(b=>!b.closed).map(b=>b.name).slice(0,5).join(', ')+'). Abra cada quadro no Trello e use Menu → Imprimir, exportar e compartilhar → Exportar como JSON.');
   if(!j||!Array.isArray(j.cards)||!Array.isArray(j.lists))throw new Error('Este arquivo não é um quadro exportado do Trello. No Trello, use Menu → Imprimir, exportar e compartilhar → Exportar como JSON.');
   const cols=j.lists.filter(l=>!l.closed).sort((a,b)=>a.pos-b.pos),colIds=new Set(cols.map(c=>c.id));
   const mem={};(j.members||[]).forEach(m=>mem[m.id]=m.fullName||m.username||'');
