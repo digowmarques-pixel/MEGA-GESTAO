@@ -1407,8 +1407,15 @@ async function enter(user,opts={}){
     }
     loadSeed();U.page='jobs';U.task=null;
   }
+  ensureSpaces();
   render();
   if(ME.mustChange)accountModal(true);
+}
+/* sem nenhum tipo de projeto não dá para criar projetos: cria Casamentos, Publicidade e Eventos */
+function ensureSpaces(){
+  if(S.spaces.length||!ME||!can('gerenciar_estrutura'))return false;
+  [['Casamentos','#B83280','casamento'],['Publicidade','#2B6CB0','publicidade'],['Eventos','#C05621','evento']].forEach(([name,color,kind])=>S.spaces.push({id:uid(),name,color,kind,statuses:VIDEO_STATUSES()}));
+  return true;
 }
 function loadSeed(){
   const sd=seed(),ids=S.members.map(m=>m.id),map={};
@@ -2056,6 +2063,7 @@ function trGuessStage(n){
 }
 const trGuessMem=n=>{const x=impNorm(n),f=x.split(/\s+/)[0];return (S.members.find(m=>impNorm(m.name)===x)||S.members.find(m=>impNorm(m.name).split(/\s+/)[0]===f)||{}).id||''};
 async function trFile(file){
+  if(ensureSpaces())render();
   try{const j=JSON.parse(await file.text());TIMP=parseTrello(j);TIMP.file=file.name;
     TIMP.opt={mode:TIMP.cards.length&&TIMP.cards.filter(c=>c.checklists.length).length>TIMP.cards.length/2?'jobs':'tasks',sp:S.spaces[0]?.id,arch:false,pname:TIMP.name,col:{},mem:{}};
     TIMP.people.forEach(n=>TIMP.opt.mem[n]=trGuessMem(n));trelloModal()}
@@ -2909,7 +2917,7 @@ const A={
   open:el=>{U.task=el.dataset.id;render()},
   closeTask:()=>{U.task=null;render()},
   newTask:el=>newTaskModal(el.dataset.due),
-  newList:el=>jobModal(null,el.dataset.id),
+  newList:el=>{if(ensureSpaces())render();jobModal(null,el.dataset.id)},
   job:el=>jobModal(listById(el.dataset.id)),
   install:async()=>{if(!INSTALL)return;INSTALL.prompt();try{await INSTALL.userChoice}catch(e){}INSTALL=null;render()},
   finTab:el=>{U.finTab=el.dataset.t;render()},
