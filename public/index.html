@@ -896,6 +896,7 @@ body.np-recursos [data-a="eqNew"],body.np-recursos [data-a="flNew"]{display:none
   .tb.open>.tog,.tb.open>[data-a=clearF]{order:4}
   .tabs .tab{padding-left:8px;padding-right:8px}
   .cal-hint{display:none}
+  .trello-btn{display:none}
   .cal-h h2{min-width:0;flex:1;font-size:17px}
 }
 .js-more,.tb-more,.jstages{display:none}
@@ -2017,9 +2018,117 @@ function teamPage(){
     <td><button class="btn sm" data-a="userEdit" data-id="${u.id}">Editar</button></td></tr>`}).join('')}
   </tbody></table></div></div>`;
 }
+/* ============ importar do Trello (quadro exportado em JSON) ============ */
+let TIMP=null;
+const TR_COLORS={green:'#22A06B',yellow:'#D69E2E',orange:'#DD6B20',red:'#E5533A',purple:'#805AD5',blue:'#3B82F6',sky:'#0EA5E9',lime:'#65A30D',pink:'#D53F8C',black:'#4A5568'};
+const trColor=c=>TR_COLORS[String(c||'').split('_')[0]]||'#8A94A0';
+const trDay=x=>{const d=new Date(x);return isNaN(d)?'':iso(d)};
+function parseTrello(j){
+  if(!j||!Array.isArray(j.cards)||!Array.isArray(j.lists))throw new Error('Este arquivo não é um quadro exportado do Trello. No Trello, use Menu → Imprimir, exportar e compartilhar → Exportar como JSON.');
+  const cols=j.lists.filter(l=>!l.closed).sort((a,b)=>a.pos-b.pos),colIds=new Set(cols.map(c=>c.id));
+  const mem={};(j.members||[]).forEach(m=>mem[m.id]=m.fullName||m.username||'');
+  const lab={};(j.labels||[]).forEach(l=>lab[l.id]={name:(l.name||'').trim(),color:trColor(l.color)});
+  const cl={};(j.checklists||[]).forEach(c=>(cl[c.idCard]=cl[c.idCard]||[]).push({name:c.name||'Checklist',pos:c.pos||0,items:(c.checkItems||[]).slice().sort((a,b)=>a.pos-b.pos).map(i=>({text:i.name||'',done:i.state==='complete',due:i.due?trDay(i.due):'',member:mem[i.idMember]||''}))}));
+  Object.values(cl).forEach(a=>a.sort((x,y)=>x.pos-y.pos));
+  const com={};(j.actions||[]).filter(a=>a.type==='commentCard'&&a.data&&a.data.card).forEach(a=>(com[a.data.card.id]=com[a.data.card.id]||[]).push({text:a.data.text||'',who:(a.memberCreator&&a.memberCreator.fullName)||mem[a.idMemberCreator]||'',at:Date.parse(a.date)||Date.now()}));
+  const cards=j.cards.filter(c=>colIds.has(c.idList)).sort((a,b)=>a.pos-b.pos).map(c=>({id:c.id,name:(c.name||'').trim()||'(sem título)',desc:c.desc||'',col:c.idList,closed:!!c.closed,
+    due:c.due?trDay(c.due):'',start:c.start?trDay(c.start):'',done:!!c.dueComplete,labels:(c.idLabels||[]).map(id=>lab[id]).filter(x=>x&&x.name),
+    members:(c.idMembers||[]).map(id=>mem[id]).filter(Boolean),checklists:cl[c.id]||[],comments:(com[c.id]||[]).sort((a,b)=>a.at-b.at),
+    links:(c.attachments||[]).filter(a=>a.url).map(a=>({name:a.name||a.url,url:a.url})),created:(parseInt(String(c.id).slice(0,8),16)*1000)||Date.now()}));
+  const people=[...new Set([...Object.values(mem),...cards.flatMap(c=>[...c.members,...c.comments.map(x=>x.who),...c.checklists.flatMap(k=>k.items.map(i=>i.member))])].filter(Boolean))];
+  return {id:j.id||j.name,name:j.name||'Quadro do Trello',cols,cards,people,nActions:(j.actions||[]).length};
+}
+function trGuessStatus(sp,n){
+  const x=impNorm(n),f=re=>sp.statuses.find(st=>re.test(impNorm(st.name)));
+  if(/(^|\W)pre(\W|$)|planej|roteir|briefing|orcam|propost|backlog|a fazer|to ?do|ideia/.test(x))return sp.statuses.find(st=>!st.done)||sp.statuses[0];
+  return (/conclu|finaliz|pront|feito|entreg|done|arquiv|encerr/.test(x)&&sp.statuses.find(st=>st.done))||(/aprova|cliente/.test(x)&&f(/aprova/))||(/ajust|altera|corre|refa/.test(x)&&f(/ajust/))||(/revis/.test(x)&&f(/revis/))
+    ||(/produ|edic|editan|fazendo|andamento|doing|motion|color|grava|filmag|capta|montag/.test(x)&&f(/produ/))||sp.statuses.find(st=>!st.done)||sp.statuses[0];
+}
+function trGuessStage(n){
+  const x=impNorm(n);
+  if(/orcam|propost|lead|prospec|negoci|contato/.test(x))return 'orcamento';
+  if(/entreg|conclu|finaliz|pront|feito|done|arquiv|encerr/.test(x))return 'entregue';
+  if(/aprova|revis|cliente|ajust/.test(x))return 'aprovacao';
+  if(/capta|filmag|grava|evento|diaria/.test(x))return 'captacao';
+  if(/(^|\W)pos(\W|$)|edic|editan|motion|color|montag|finaliza/.test(x))return 'pos';
+  return 'pre';
+}
+const trGuessMem=n=>{const x=impNorm(n),f=x.split(/\s+/)[0];return (S.members.find(m=>impNorm(m.name)===x)||S.members.find(m=>impNorm(m.name).split(/\s+/)[0]===f)||{}).id||''};
+async function trFile(file){
+  try{const j=JSON.parse(await file.text());TIMP=parseTrello(j);TIMP.file=file.name;
+    TIMP.opt={mode:TIMP.cards.length&&TIMP.cards.filter(c=>c.checklists.length).length>TIMP.cards.length/2?'jobs':'tasks',sp:S.spaces[0]?.id,arch:false,pname:TIMP.name,col:{},mem:{}};
+    TIMP.people.forEach(n=>TIMP.opt.mem[n]=trGuessMem(n));trelloModal()}
+  catch(e){toast(e instanceof SyntaxError?'Não consegui ler o arquivo. Escolha o .json exportado do Trello.':e.message)}
+}
+function trReadOpt(f){
+  if(!f||!TIMP)return;const o=TIMP.opt,q=sel=>f.querySelector(sel);
+  f.querySelectorAll('[name=tr-col]').forEach(x=>o.col[x.dataset.key]=x.value);
+  if(q('#tr-mode'))o.mode=q('#tr-mode').value;if(q('#tr-sp'))o.sp=q('#tr-sp').value;if(q('#tr-pname'))o.pname=q('#tr-pname').value;if(q('#tr-arch'))o.arch=q('#tr-arch').checked;
+  f.querySelectorAll('[name=tr-mem]').forEach(x=>o.mem[x.dataset.n]=x.value);
+}
+function trelloModal(){
+  const d=TIMP,o=d.opt,sp=spaceById(o.sp)||S.spaces[0];if(!sp){toast('Crie um tipo de projeto antes de importar');return}o.sp=sp.id;
+  const cards=d.cards.filter(c=>o.arch||!c.closed),done=new Set([...S.lists,...S.tasks].map(x=>x.imp).filter(Boolean));
+  const nNew=o.mode==='jobs'?cards.filter(c=>!done.has('trello:'+c.id)).length:cards.filter(c=>!done.has('trello:'+c.id)).length;
+  const colVal=c=>o.col[o.mode+'|'+sp.id+'|'+c.id]||(o.mode==='jobs'?trGuessStage(c.name):trGuessStatus(sp,c.name).id);
+  const opts=o.mode==='jobs'?STAGES.map(([k,n])=>[k,n]):sp.statuses.map(st=>[st.id,st.name]);
+  const nCk=cards.reduce((a,c)=>a+c.checklists.reduce((b,k)=>b+k.items.length,0),0),nCom=cards.reduce((a,c)=>a+c.comments.length,0),nArch=d.cards.filter(c=>c.closed).length;
+  openModal(`<form class="md wide" data-form="trimp" aria-label="Importar do Trello"><h2>Importar do Trello</h2>
+    <p>${esc(d.name)} <span class="muted">· ${esc(d.file)}</span></p>
+    <div class="finbox"><div><small>Colunas</small><b>${d.cols.length}</b></div><div><small>Cartões</small><b>${cards.length}</b><small>${nArch?nArch+' arquivado'+(nArch>1?'s':''):''}</small></div><div><small>Itens de checklist</small><b>${nCk}</b></div><div><small>Comentários</small><b>${nCom}</b></div></div>
+    <div class="row"><div class="f"><label for="tr-mode">Como você usava este quadro?</label><select id="tr-mode" data-c="trOpt">
+      <option value="tasks" ${o.mode==='tasks'?'selected':''}>Um projeto: cada cartão é uma tarefa</option>
+      <option value="jobs" ${o.mode==='jobs'?'selected':''}>Funil: cada cartão é um projeto (job)</option></select></div>
+      <div class="f"><label for="tr-sp">Tipo de projeto</label><select id="tr-sp" data-c="trOpt">${S.spaces.map(x=>`<option value="${x.id}" ${x.id===sp.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div></div>
+    ${o.mode==='tasks'?`<div class="f"><label for="tr-pname">Nome do projeto</label><input id="tr-pname" value="${esc(o.pname)}"></div>`:''}
+    <p class="muted" style="font-size:12.5px;margin:0">${o.mode==='tasks'?'O quadro vira um projeto. Cada cartão vira uma tarefa com descrição, prazo, responsáveis, etiquetas (como tags), checklist, anexos e comentários.':'Cada cartão vira um projeto, na etapa do funil escolhida abaixo. A descrição, os comentários, as etiquetas e os anexos vão para as observações do projeto, e cada item de checklist vira uma tarefa do projeto.'}</p>
+    <div class="sec-t">${o.mode==='jobs'?'Em qual etapa entra cada coluna':'Em qual status entra cada coluna'}</div>
+    <div class="impacc">${d.cols.map(c=>{const v=colVal(c),n=cards.filter(x=>x.col===c.id).length;return `<div class="strow"><b style="flex:1;min-width:150px">${esc(c.name)} <span class="muted" style="font-weight:500">· ${n} cart${n===1?'ão':'ões'}</span></b><select name="tr-col" data-key="${o.mode}|${sp.id}|${c.id}" aria-label="Destino da coluna ${esc(c.name)}">${opts.map(([k,n])=>`<option value="${k}" ${k===v?'selected':''}>${esc(n)}</option>`).join('')}</select></div>`}).join('')}</div>
+    ${d.people.length?`<div class="sec-t">Pessoas do Trello</div><p class="muted" style="font-size:12.5px;margin:0">Escolha quem é cada pessoa aqui no sistema. Quem ficar como “Ninguém” sai dos responsáveis, e os comentários dela entram com o nome escrito no texto.</p>
+    <div class="impacc">${d.people.map(n=>`<div class="strow"><b style="flex:1;min-width:150px">${esc(n)}</b><select name="tr-mem" data-n="${esc(n)}" aria-label="Pessoa ${esc(n)}"><option value="">Ninguém</option>${S.members.map(m=>`<option value="${m.id}" ${o.mem[n]===m.id?'selected':''}>${esc(m.name)}</option>`).join('')}</select></div>`).join('')}</div>`:''}
+    ${nArch?`<label class="tog" style="color:var(--fg)"><input type="checkbox" id="tr-arch" data-c="trOpt" ${o.arch?'checked':''}> Trazer também os ${nArch} cartões arquivados</label>`:''}
+    ${d.nActions>=1000?'<p class="muted" style="font-size:12.5px;margin:0">O Trello só exporta as 1.000 atividades mais recentes do quadro, então comentários muito antigos podem não vir.</p>':''}
+    <p class="err" role="alert"></p>
+    <div class="foot"><button type="button" class="btn" data-a="closeModal">Cancelar</button><button class="btn primary" type="submit" ${nNew?'':'disabled'}>${nNew?`Importar ${nNew} ${o.mode==='jobs'?(nNew>1?'projetos':'projeto'):(nNew>1?'tarefas':'tarefa')}`:'Tudo já foi importado'}</button></div></form>`);
+}
+function trImport(){
+  const d=TIMP,o=d.opt,sp=spaceById(o.sp),now=Date.now(),done=new Set([...S.lists,...S.tasks].map(x=>x.imp).filter(Boolean));
+  const M=n=>o.mem[n]||'',colOf=c=>o.col[o.mode+'|'+sp.id+'|'+c]||(o.mode==='jobs'?trGuessStage((d.cols.find(x=>x.id===c)||{}).name):trGuessStatus(sp,(d.cols.find(x=>x.id===c)||{}).name).id);
+  const doneSt=sp.statuses.find(x=>x.done)||sp.statuses[sp.statuses.length-1],openSt=sp.statuses.find(x=>!x.done)||sp.statuses[0];
+  const uniq=a=>[...new Set(a.filter(Boolean))];
+  const tagIds=labels=>labels.map(l=>{let t=S.tags.find(x=>impNorm(x.name)===impNorm(l.name));if(!t){t={id:uid(),name:l.name,color:l.color};S.tags.push(t)}return t.id});
+  const comText=c=>(M(c.who)?'':(c.who?c.who+' (Trello): ':''))+c.text;
+  const mkTask=(o2)=>{const st=sp.statuses.find(x=>x.id===o2.status)||openSt;return Object.assign({id:uid(),desc:'',priority:'normal',assignees:[],tags:[],start:'',due:'',estimate:0,time:[],checklist:[],comments:[],
+    activity:[{at:now,by:S.me,text:'importou do Trello'}],blockedBy:[],recur:'',parentId:null,updatedAt:now,completedAt:st.done?now:null,by:S.me,link:'',rev:0},o2)};
+  const cards=d.cards.filter(c=>(o.arch||!c.closed)&&!done.has('trello:'+c.id));let nT=0,nL=0;
+  if(o.mode==='tasks'){
+    let l=S.lists.find(x=>x.imp==='trello:'+d.id);
+    if(!l){l={id:uid(),spaceId:sp.id,name:(o.pname||'').trim()||d.name,client:'',stage:'pos',shootStart:'',shootEnd:'',location:'',due:'',team:[],gear:[],freelas:[],links:{},notes:'Importado do Trello ('+d.name+')',owner:S.me,createdAt:now,imp:'trello:'+d.id};S.lists.push(l);nL++}
+    cards.forEach((c,i)=>{const status=c.done?doneSt.id:colOf(c.col),st=sp.statuses.find(x=>x.id===status);
+      const desc=[c.desc,c.links.length?'Anexos:\n'+c.links.map(a=>'• '+a.name+': '+a.url).join('\n'):''].filter(Boolean).join('\n\n');
+      S.tasks.push(mkTask({listId:l.id,title:c.name,desc,status,assignees:uniq(c.members.map(M)),tags:tagIds(c.labels),start:c.start,due:c.due,link:(c.links[0]||{}).url||'',
+        checklist:c.checklists.flatMap(k=>k.items.map(it=>({id:uid(),text:(c.checklists.length>1?k.name+': ':'')+it.text,done:it.done||!!st?.done}))),
+        comments:c.comments.map(x=>({id:uid(),by:M(x.who)||S.me,text:comText(x),at:x.at})),createdAt:c.created,order:i,imp:'trello:'+c.id}));nT++});
+    l.team=uniq([...(l.team||[]),...cards.flatMap(c=>c.members.map(M))]);
+  }else{
+    cards.forEach((c,ci)=>{
+      const notes=[c.desc,c.labels.length?'Etiquetas: '+c.labels.map(x=>x.name).join(', '):'',c.links.length?'Anexos:\n'+c.links.map(a=>'• '+a.name+': '+a.url).join('\n'):'',
+        c.comments.length?'Comentários do Trello:\n'+c.comments.map(x=>'• '+new Date(x.at).toLocaleDateString('pt-BR')+(x.who?' – '+x.who:'')+': '+x.text).join('\n'):''].filter(Boolean).join('\n\n');
+      const stage=c.done?'entregue':colOf(c.col),items=c.checklists.flatMap(k=>k.items.map(it=>({...it,k:k.name})));
+      const team=uniq([...c.members.map(M),...items.map(it=>M(it.member))]);
+      const l={id:uid(),spaceId:sp.id,name:c.name,client:'',stage,shootStart:c.start||'',shootEnd:'',location:'',due:c.due,team,gear:[],freelas:[],links:{},notes,owner:S.me,createdAt:c.created,imp:'trello:'+c.id};
+      S.lists.push(l);nL++;
+      items.forEach((it,i)=>{S.tasks.push(mkTask({listId:l.id,title:it.text||'(sem título)',status:it.done||stage==='entregue'?doneSt.id:openSt.id,assignees:uniq([M(it.member)]),due:it.due||'',
+        desc:c.checklists.length>1?'Checklist: '+it.k:'',createdAt:c.created+i,order:ci*1000+i}));nT++});
+    });
+  }
+  closeModal();TIMP=null;U.page='jobs';U.jk='';render();
+  toast(o.mode==='jobs'?`${nL} projeto${nL===1?'':'s'} e ${nT} tarefa${nT===1?'':'s'} importados do Trello`:`${nT} tarefa${nT===1?'':'s'} importada${nT===1?'':'s'} do Trello`);
+}
 function settingsPage(){
   return topBar('Configurações','Espaços, status, tags e dados')+`<div class="page scroll" data-keep="page">
   ${can('gerenciar_automacoes')?`<section class="panel set-sec"><h2>Automações</h2><p>Regras automáticas, como avisar a gestão quando um vídeo vai para aprovação do cliente.</p><button class="btn" data-a="go" data-p="auto">${ic('zap')} Abrir automações</button></section>`:''}
+  <section class="panel set-sec need-estr"><h2>Importar do Trello</h2><p>No Trello, abra o quadro e vá em <b>Menu (⋯) → Imprimir, exportar e compartilhar → Exportar como JSON</b>. Salve o arquivo e escolha-o aqui. Repita para cada quadro. Importar o mesmo quadro de novo não duplica nada.</p><label class="btn">${ic('download')} Escolher arquivo do Trello (.json)<input type="file" accept=".json,application/json" data-c="trFile" hidden></label></section>
   <section class="panel set-sec need-estr"><h2>Tipos de projeto, status e projetos</h2><p>Cada espaço tem o seu próprio fluxo de status. Marque como “concluído” os status que encerram a tarefa.</p>
   ${S.spaces.map(sp=>`<div class="sp-set">
     <div class="strow"><input type="color" value="${sp.color}" data-c="spF" data-f="color" data-id="${sp.id}" aria-label="Cor do espaço"><input type="text" value="${esc(sp.name)}" data-c="spF" data-f="name" data-id="${sp.id}" style="font-weight:700" aria-label="Nome do espaço"><select data-c="spF" data-f="kind" data-id="${sp.id}" aria-label="Modelo de tarefas">${KINDS.map(([k,n])=>`<option value="${k}" ${(sp.kind||'')===k?'selected':''}>Modelo: ${n}</option>`).join('')}</select><button class="btn ghost sm danger" data-a="delSpace" data-id="${sp.id}">${ic('trash')} Excluir espaço</button></div>
@@ -2122,7 +2231,7 @@ function jobCard(l){
 function jobsPage(){
   const jobs=S.lists.filter(l=>!U.jk||l.spaceId===U.jk);
   const filt=`<select data-c="filt" data-k="jk" aria-label="Tipo"><option value="">Todos os tipos</option>${S.spaces.map(s=>`<option value="${s.id}" ${U.jk===s.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select>`;
-  return topBar('Projetos',`${jobs.filter(l=>l.stage!=='entregue').length} em andamento`,filt+(can('gerenciar_estrutura')?`<button class="btn primary" data-a="newList">${ic('plus')} Novo projeto</button>`:''))+`<div class="jstages" role="navigation" aria-label="Etapas">${STAGES.map(([k,n,c])=>`<button class="jsg" data-a="jStage" data-k="${k}" style="--c:${c}"><i></i>${n}<b>${jobs.filter(l=>(l.stage||'orcamento')===k).length}</b></button>`).join('')}</div><div class="view"><div class="board scroll jboard" data-keep="jobs">${STAGES.map(([k,n,c])=>{const js=jobs.filter(l=>(l.stage||'orcamento')===k).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9'));return `<div class="col ${js.length?'':'empty-col'}" id="stg-${k}" data-jdrop="${k}"><div class="col-h">${pill(n,c)}<span class="count">${js.length}</span>${isAdm()&&js.some(l=>l.valor)?`<span class="col-est">${fmtNum(js.reduce((a,l)=>a+(+l.valor||0),0),'R$')}</span>`:''}</div><div class="col-b">${js.map(jobCard).join('')}</div></div>`}).join('')}</div></div>`;
+  return topBar('Projetos',`${jobs.filter(l=>l.stage!=='entregue').length} em andamento`,filt+(can('gerenciar_estrutura')?`<label class="btn trello-btn" title="Importar quadros do Trello">${ic('download')} Importar do Trello<input type="file" accept=".json,application/json" data-c="trFile" hidden></label><button class="btn primary" data-a="newList">${ic('plus')} Novo projeto</button>`:''))+`<div class="jstages" role="navigation" aria-label="Etapas">${STAGES.map(([k,n,c])=>`<button class="jsg" data-a="jStage" data-k="${k}" style="--c:${c}"><i></i>${n}<b>${jobs.filter(l=>(l.stage||'orcamento')===k).length}</b></button>`).join('')}</div><div class="view"><div class="board scroll jboard" data-keep="jobs">${STAGES.map(([k,n,c])=>{const js=jobs.filter(l=>(l.stage||'orcamento')===k).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9'));return `<div class="col ${js.length?'':'empty-col'}" id="stg-${k}" data-jdrop="${k}"><div class="col-h">${pill(n,c)}<span class="count">${js.length}</span>${isAdm()&&js.some(l=>l.valor)?`<span class="col-est">${fmtNum(js.reduce((a,l)=>a+(+l.valor||0),0),'R$')}</span>`:''}</div><div class="col-b">${js.map(jobCard).join('')}</div></div>`}).join('')}</div></div>`;
 }
 function agendaPage(){
   const mo=U.agMonth||TODAY.slice(0,7),[y,m]=mo.split('-').map(Number),first=new Date(y,m-1,1),gs=addDays(iso(first),-first.getDay());
@@ -2936,6 +3045,8 @@ function importJSON(txt){
 
 /* ============ alterações de campos ============ */
 const C={
+  trFile:el=>{const f=el.files[0];el.value='';if(f)trFile(f)},
+  trOpt:el=>{trReadOpt(el.closest('form'));trelloModal()},
   impFile:el=>{const f=el.files[0];el.value='';if(f)impFile(f)},
   accType:el=>{const f=el.closest('form'),card=el.value==='cartao';f.querySelector('#ac-card').hidden=!card;f.querySelector('#ac-initf').hidden=card;f.querySelector('#ac-help').hidden=card},
   rk:el=>{U.rk=el.value;render()},
@@ -3087,6 +3198,7 @@ const F={
     closeModal();toast(id?'Usuário atualizado':`Usuário criado. Passe o usuário “${r.json.user.login}” e a senha para ${r.json.user.name.split(' ')[0]}.`);
     await loadUsers();await sync(true)},
   mkTask:f=>{const v=id=>f.querySelector('#'+id).value;const t=createTask({title:v('nt-title').trim(),listId:v('nt-list'),priority:v('nt-pri'),assignees:v('nt-as')?[v('nt-as')]:[],due:v('nt-due'),desc:v('nt-desc')});closeModal();if(t){U.task=t.id;toast('Tarefa criada')}render()},
+  trimp:f=>{trReadOpt(f);trImport()},
   job:f=>{const v=id=>f.querySelector('#'+id)?.value??'',err=f.querySelector('.err'),id=f.dataset.id;
     const name=v('jb-name').trim();if(!name){err.textContent='Dê um nome ao projeto.';return}
     const s1=v('jb-s1'),s2=v('jb-s2'),due=v('jb-due');
